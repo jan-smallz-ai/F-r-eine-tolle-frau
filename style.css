@@ -1,288 +1,531 @@
 :root{
-  --bg1:#070a2a;
-  --bg2:#0b1646;
-  --card: rgba(255,255,255,.07);
-  --card2: rgba(0,0,0,.25);
+  --bg1:#061226;
+  --bg2:#0b2a4a;
+  --card: rgba(255,255,255,.10);
+  --card2: rgba(255,255,255,.14);
   --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.70);
-  --gold:#ffdd6e;
-  --btn:#ffdd6e;
-  --btnText:#121421;
-  --stroke: rgba(255,255,255,.18);
+  --muted: rgba(255,255,255,.72);
   --shadow: 0 18px 60px rgba(0,0,0,.45);
-  --radius: 20px;
-  --safeTop: env(safe-area-inset-top, 0px);
-  --safeBottom: env(safe-area-inset-bottom, 0px);
+  --round: 22px;
 }
 
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
+*{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
   color:var(--text);
-  background: radial-gradient(1200px 800px at 30% 10%, #16206f 0%, var(--bg1) 45%, #050618 100%);
-  overflow-x:hidden;
-  padding-bottom: calc(18px + var(--safeBottom));
-}
-
-.wrap{
-  max-width: 520px;
-  margin: 0 auto;
-  padding: calc(18px + var(--safeTop)) 16px 24px;
-}
-
-.hero{
-  text-align:center;
-  margin-top: 6px;
-  margin-bottom: 14px;
-}
-.badge{
-  width:44px;height:44px;
-  display:grid;place-items:center;
-  margin: 0 auto 8px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid var(--stroke);
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
-}
-h1{
-  margin:0;
-  font-size: 42px;
-  line-height: 1.06;
-  letter-spacing: .2px;
-}
-.gold{ color: var(--gold); text-shadow: 0 6px 22px rgba(255,221,110,.22); }
-.sub{
-  margin: 10px auto 0;
-  max-width: 34ch;
-  color: var(--muted);
-  font-size: 16px;
-}
-.nowrap{ white-space:nowrap; }
-
-.card{
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18));
-  border: 1px solid var(--stroke);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
-  position: relative;
+  background: radial-gradient(1200px 800px at 20% 0%, #123a67 0%, var(--bg2) 35%, var(--bg1) 85%);
   overflow:hidden;
 }
 
 .scene{
-  position: relative;
-  height: 360px;
-  border-radius: 16px;
-  background: radial-gradient(700px 500px at 50% 0%, rgba(255,255,255,.08), rgba(0,0,0,.22));
-  border: 1px solid rgba(255,255,255,.12);
-  overflow:hidden;
+  position:fixed; inset:0;
+  display:none;
+  padding:18px 14px 26px;
+}
+.scene.active{display:block}
+
+.topline{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin: 4px auto 14px;
+  max-width: 980px;
 }
 
-.gift{
-  position:absolute;
-  left:50%;
-  top: 52%;
-  transform: translate(-50%,-50%);
-  width: 170px;
-  height: 170px;
-  filter: drop-shadow(0 18px 35px rgba(0,0,0,.45));
+.badge{
+  background: linear-gradient(135deg, var(--card), var(--card2));
+  border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow);
+  font-weight:700;
 }
-.giftBox{
-  position:absolute;
-  left:0; right:0;
-  top:36px; bottom:0;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #e32e2e, #b81414);
+
+.chip{
+  background: rgba(255,255,255,.10);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  padding: 10px 12px;
+  cursor:pointer;
+  box-shadow: var(--shadow);
 }
-.giftTop{
+.chip:active{transform: translateY(1px)}
+
+.footerNote{
   position:absolute;
-  left:6px; right:6px;
-  top:22px;
-  height: 34px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #ff4b4b, #d51b1b);
-  border: 1px solid rgba(255,255,255,.22);
+  left:0; right:0; bottom:10px;
+  text-align:center;
+  color: var(--muted);
+  font-size: 13px;
 }
-.giftBow{
-  position:absolute;
-  left:50%;
-  top:0;
-  transform: translateX(-50%);
-  width: 78px;
-  height: 56px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #ffdd6e, #f0b93d);
-  clip-path: polygon(50% 0%, 60% 20%, 80% 10%, 100% 40%, 80% 55%, 60% 35%, 50% 60%, 40% 35%, 20% 55%, 0% 40%, 20% 10%, 40% 20%);
+
+/* Snow background */
+#bgSnow{
+  position:fixed; inset:0;
+  pointer-events:none;
+  overflow:hidden;
   opacity:.95;
 }
-
-.gift.wobble{ animation: wobble .55s ease-in-out infinite; }
-@keyframes wobble{
-  0%{ transform: translate(-50%,-50%) rotate(-2deg) scale(1.00); }
-  50%{ transform: translate(-50%,-50%) rotate(2deg) scale(1.02); }
-  100%{ transform: translate(-50%,-50%) rotate(-2deg) scale(1.00); }
+.snowflake{
+  position:absolute;
+  top:-10px;
+  width:8px; height:8px;
+  border-radius:50%;
+  background: rgba(255,255,255,.8);
+  filter: blur(.2px);
+  animation: fall linear infinite;
+}
+@keyframes fall{
+  to{ transform: translateY(110vh) translateX(40px); }
 }
 
-.hud{
+/* ===== INTRO SKY ===== */
+.sky{
+  max-width: 980px;
+  margin: 0 auto;
+  height: calc(100% - 120px);
+  border-radius: var(--round);
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  box-shadow: var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+
+.hint{
   position:absolute;
   left: 14px;
-  right: 14px;
   bottom: 14px;
-  padding: 12px 12px 10px;
-  border-radius: 16px;
-  background: rgba(0,0,0,.25);
+  max-width: 360px;
+  background: rgba(0,0,0,.28);
   border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 12px 12px;
+  backdrop-filter: blur(10px);
 }
-.stepTitle{
-  font-weight: 800;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-.meter{
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.10);
-  overflow:hidden;
-}
-.meterBar{
-  height:100%;
-  width: 0%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255,221,110,.9), rgba(255,221,110,.55));
-}
-.tiny{
-  margin: 8px 0 0;
-  color: rgba(255,255,255,.72);
-  font-size: 13px;
-}
+.hintTitle{font-weight:900; margin-bottom:4px}
+.hintText{color:var(--muted); font-weight:600}
 
-.controls{
-  display:flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-.btn{
-  appearance:none;
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(255,255,255,.08);
-  color: var(--text);
-  padding: 12px 14px;
-  border-radius: 999px;
-  font-weight: 800;
-  width: 100%;
-  cursor: pointer;
-  user-select:none;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn.primary{
-  background: var(--btn);
-  color: var(--btnText);
-  border-color: rgba(0,0,0,.12);
-}
-.btn.big{
-  padding: 14px 16px;
-  font-size: 16px;
-}
-.btn:active{ transform: translateY(1px); }
-
-.ps{
-  text-align:center;
-  margin: 12px 0 0;
-  color: rgba(255,255,255,.55);
-  font-size: 12.5px;
-}
-
-/* Santa + Kuh: fliegen oben entlang */
-.sky{
-  position: relative;
-  height: 56px;
-  margin: 6px 0 10px;
-  overflow:hidden;
-}
-.santaCow{
+.cow-sled{
   position:absolute;
-  top: 6px;
+  top: 18%;
   left: -40%;
-  display:flex;
-  align-items:center;
-  gap: 6px;
-  font-size: 28px;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
-  animation: fly 6.5s linear infinite;
+  width: 360px;
+  height: 220px;
+  cursor:pointer;
+  outline:none;
+  animation: fly 6.4s linear infinite;
+  transform-origin: 40% 50%;
 }
-.santaCow .trail{ opacity:.65; margin-left:2px; }
+.cow-sled:hover{filter: drop-shadow(0 18px 30px rgba(0,0,0,.35))}
 @keyframes fly{
-  0%{ transform: translateX(0) translateY(0) rotate(-2deg); }
-  35%{ transform: translateX(75vw) translateY(-6px) rotate(2deg); }
-  70%{ transform: translateX(140vw) translateY(2px) rotate(-1deg); }
-  100%{ transform: translateX(170vw) translateY(0) rotate(0deg); }
+  0%{ transform: translateX(-10%) translateY(0) rotate(-3deg) }
+  50%{ transform: translateX(165%) translateY(-30px) rotate(3deg) }
+  100%{ transform: translateX(340%) translateY(0) rotate(-3deg) }
+}
+.cow-sled.landing{
+  animation: land 1.2s ease-out forwards;
+}
+@keyframes land{
+  0%{ transform: translateX(140%) translateY(-20px) rotate(2deg) scale(1) }
+  70%{ transform: translateX(120%) translateY(210px) rotate(-6deg) scale(1.05) }
+  100%{ transform: translateX(120%) translateY(260px) rotate(0deg) scale(1) }
 }
 
-/* Modal */
-.modal{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 18px;
-  z-index: 50;
+/* ===== COW ===== */
+.cow{
+  position:absolute;
+  left: 20px; top: 66px;
+  width: 250px; height: 140px;
+  transform: rotate(-2deg);
 }
-.hidden{ display:none !important; }
-.modalCard{
-  width: min(520px, 100%);
-  background: linear-gradient(180deg, rgba(25,30,80,.92), rgba(10,12,30,.92));
-  border: 1px solid rgba(255,255,255,.18);
+.cow-body{
+  position:absolute;
+  left: 60px; top: 38px;
+  width: 170px; height: 90px;
+  background:#f2f2f2;
+  border-radius: 60px;
+  border: 3px solid rgba(0,0,0,.18);
+  animation: wob 0.65s ease-in-out infinite;
+}
+@keyframes wob{
+  0%,100%{ transform: translateY(0) rotate(-1deg) }
+  50%{ transform: translateY(3px) rotate(1.5deg) }
+}
+.spot{position:absolute; background:#222; border-radius: 24px; opacity:.9}
+.s1{width:36px; height:24px; left:28px; top:16px}
+.s2{width:42px; height:28px; left:86px; top:42px}
+.s3{width:34px; height:24px; left:120px; top:14px}
+
+.cow-head{
+  position:absolute;
+  left: 10px; top: 48px;
+  width: 78px; height: 58px;
+  background:#f2f2f2;
+  border-radius: 26px;
+  border: 3px solid rgba(0,0,0,.18);
+  animation: headbob .6s ease-in-out infinite;
+}
+@keyframes headbob{ 0%,100%{ transform: rotate(-2deg) } 50%{ transform: rotate(3deg) } }
+.cow-eye{position:absolute; width:8px; height:8px; background:#111; border-radius:50%; top:18px}
+.eye-l{left:20px}
+.eye-r{left:46px}
+.cow-nose{position:absolute; left:22px; top:34px; width:34px; height:18px; background:#e7b4b4; border-radius: 14px; border:2px solid rgba(0,0,0,.12)}
+.cow-ear{
+  position:absolute; width:22px; height:28px; background:#f2f2f2;
+  border:3px solid rgba(0,0,0,.18);
+  border-radius: 18px;
+  top: 42px;
+}
+.ear-l{left: 0; transform: rotate(-25deg)}
+.ear-r{left: 62px; transform: rotate(25deg)}
+
+.cow-leg{
+  position:absolute; width:16px; height:42px; background:#f2f2f2;
+  border:3px solid rgba(0,0,0,.18);
+  border-radius: 12px;
+  top: 110px;
+  animation: leg .45s ease-in-out infinite;
+}
+@keyframes leg{ 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(4px)} }
+.leg1{left:78px}
+.leg2{left:118px; animation-delay:.08s}
+.leg3{left:168px; animation-delay:.16s}
+.leg4{left:206px; animation-delay:.24s}
+
+.udder{
+  position:absolute;
+  left: 56px; top: 60px;
+  width: 64px; height: 34px;
+  background:#f4b8c6;
+  border:2px solid rgba(0,0,0,.14);
+  border-radius: 20px;
+  animation: udder .35s ease-in-out infinite;
+  transform-origin: 50% 20%;
+}
+@keyframes udder{
+  0%,100%{ transform: rotate(-3deg) translateY(0) }
+  50%{ transform: rotate(4deg) translateY(2px) }
+}
+.teat{
+  position:absolute; width:10px; height:16px; background:#f2a6b8;
+  border-radius: 10px; bottom:-8px;
+  border:2px solid rgba(0,0,0,.12);
+  animation: teat .35s ease-in-out infinite;
+}
+@keyframes teat{ 0%,100%{ transform: rotate(-6deg)} 50%{ transform: rotate(7deg)} }
+.t1{left:8px}
+.t2{left:22px; animation-delay:.06s}
+.t3{left:36px; animation-delay:.12s}
+.t4{left:50px; animation-delay:.18s}
+
+/* ===== SANTA ===== */
+.santa{
+  position:absolute;
+  left: 170px; top: 4px;
+  width: 170px; height: 200px;
+  transform-origin: 30% 70%;
+  animation: santaWob .55s ease-in-out infinite;
+}
+@keyframes santaWob{
+  0%,100%{ transform: rotate(-2deg) translateY(0) }
+  50%{ transform: rotate(3deg) translateY(3px) }
+}
+.hat{
+  position:absolute; left: 58px; top: 6px;
+  width: 54px; height: 42px;
+  background: #d81e2a;
+  border-radius: 14px 14px 6px 6px;
+  transform: rotate(-12deg);
+  border: 3px solid rgba(0,0,0,.15);
+}
+.head{
+  position:absolute; left: 52px; top: 34px;
+  width: 70px; height: 70px;
+}
+.face{
+  position:absolute; inset: 0;
+  background: #f2c7a3;
+  border-radius: 50%;
+  border: 3px solid rgba(0,0,0,.15);
+}
+.beard{
+  position:absolute; left: -6px; top: 26px;
+  width: 82px; height: 64px;
+  background: #f3f3f3;
+  border-radius: 44px;
+  border: 3px solid rgba(0,0,0,.12);
+  animation: beard .45s ease-in-out infinite;
+}
+@keyframes beard{ 0%,100%{ transform: rotate(-2deg)} 50%{ transform: rotate(3deg)} }
+.eye{
+  position:absolute; top: 22px;
+  width: 10px; height: 10px;
+  background: #111;
+  border-radius: 50%;
+}
+.e1{left:18px}
+.e2{left:42px}
+.nose{
+  position:absolute; left: 32px; top: 34px;
+  width: 10px; height: 10px;
+  background:#e9a38e;
+  border-radius: 50%;
+}
+.smile{
+  position:absolute; left: 22px; top: 46px;
+  width: 30px; height: 14px;
+  border-bottom: 4px solid rgba(0,0,0,.35);
+  border-radius: 0 0 18px 18px;
+}
+
+.torso{
+  position:absolute; left: 50px; top: 102px;
+  width: 78px; height: 52px;
+  background: #f0c9a9;
   border-radius: 22px;
+  border: 3px solid rgba(0,0,0,.12);
+  box-shadow: inset 0 -10px 0 rgba(0,0,0,.05);
+}
+.shorts{
+  position:absolute; left: 60px; top: 150px;
+  width: 58px; height: 34px;
+  background: #1d6bff;
+  border-radius: 14px;
+  border: 3px solid rgba(0,0,0,.15);
+}
+.arm{
+  position:absolute; width: 20px; height: 50px;
+  background:#f0c9a9;
+  border-radius: 16px;
+  border:3px solid rgba(0,0,0,.12);
+  top: 110px;
+  animation: arm .4s ease-in-out infinite;
+}
+@keyframes arm{ 0%,100%{ transform: rotate(-18deg)} 50%{ transform: rotate(20deg)} }
+.a1{left: 26px}
+.a2{left: 126px; animation-delay:.07s}
+.hand{
+  position:absolute; width: 18px; height: 18px;
+  background:#f0c9a9;
+  border-radius: 50%;
+  border:3px solid rgba(0,0,0,.12);
+  top: 150px;
+}
+.h1{left: 22px}
+.h2{left: 130px}
+
+.speech{
+  position:absolute;
+  left: -20px;
+  top: -14px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.16);
+  padding: 10px 10px;
+  border-radius: 16px;
+  max-width: 180px;
+  font-weight: 800;
+  color: rgba(255,255,255,.92);
+  backdrop-filter: blur(10px);
+  transform: rotate(2deg);
+}
+
+.trail{
+  position:absolute;
+  left: -30px; top: 150px;
+  width: 110px; height: 12px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+  filter: blur(1px);
+  opacity: .65;
+  animation: trail .6s ease-in-out infinite;
+}
+@keyframes trail{ 0%,100%{ transform: scaleX(.8)} 50%{ transform: scaleX(1.1)} }
+
+/* ===== SNOW WIPE ===== */
+.snowStage{
+  max-width: 980px;
+  margin: 0 auto;
+  height: calc(100% - 90px);
+  border-radius: var(--round);
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   box-shadow: var(--shadow);
+  position:relative;
+  overflow:hidden;
   padding: 16px;
 }
-.modalCard h2{ margin: 2px 0 10px; font-size: 26px; }
-.modalText{ margin: 0 0 10px; color: rgba(255,255,255,.82); }
-.codeBox{
-  display:flex;
-  gap: 10px;
-  align-items: stretch;
-  background: rgba(255,255,255,.06);
-  border: 1px dashed rgba(255,255,255,.22);
-  border-radius: 18px;
-  padding: 12px;
-}
-code{
-  display:block;
-  flex: 1;
-  font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  font-size: 15px;
-  line-height: 1.2;
-  word-break: break-all;
+.crashText{
+  font-weight: 900;
+  margin: 6px 0 10px;
   color: rgba(255,255,255,.92);
 }
-.hint{
-  margin: 10px 0 12px;
-  color: rgba(255,255,255,.65);
-  font-size: 13px;
+.snowBoard{
+  position:relative;
+  height: min(520px, 70vh);
+  border-radius: 20px;
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  touch-action: none;
+}
+.snowGameDot{
+  position:absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
 }
 
-/* Schnee (rein CSS) */
-.snow{
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.85) 0 2px, transparent 3px),
-    radial-gradient(circle, rgba(255,255,255,.7) 0 1.5px, transparent 3px),
-    radial-gradient(circle, rgba(255,255,255,.55) 0 1.2px, transparent 3px);
-  background-size: 120px 120px, 160px 160px, 220px 220px;
-  background-position: 0 0, 40px 60px, 90px 30px;
-  animation: snowfall 10s linear infinite;
-  opacity:.55;
+/* ===== GIFT ===== */
+.giftStage{
+  max-width: 980px;
+  margin: 0 auto;
+  height: calc(100% - 90px);
+  border-radius: var(--round);
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  box-shadow: var(--shadow);
+  position:relative;
+  overflow:hidden;
+  padding: 18px;
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+  align-items:center;
+  justify-content:center;
 }
-@keyframes snowfall{
-  0%{ transform: translateY(-6%); }
-  100%{ transform: translateY(6%); }
-  }
+
+.message{
+  text-align:center;
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 14px 14px;
+  border-radius: 18px;
+  max-width: 620px;
+  backdrop-filter: blur(10px);
+}
+.msgTitle{font-weight: 1000; font-size: 22px}
+.msgText{color: var(--muted); font-weight: 650}
+
+.giftBox{
+  width: 220px;
+  height: 220px;
+  position: relative;
+  cursor:pointer;
+  outline:none;
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,.35));
+  animation: giftIdle .9s ease-in-out infinite;
+}
+@keyframes giftIdle{
+  0%,100%{ transform: rotate(-2deg) translateY(0) }
+  50%{ transform: rotate(3deg) translateY(3px) }
+}
+.giftBox.shake{ animation: shake .45s ease-in-out 1; }
+@keyframes shake{
+  0%{ transform: rotate(0) translateX(0) }
+  25%{ transform: rotate(3deg) translateX(6px) }
+  50%{ transform: rotate(-3deg) translateX(-6px) }
+  75%{ transform: rotate(2deg) translateX(4px) }
+  100%{ transform: rotate(0) translateX(0) }
+}
+.box{
+  position:absolute; left: 20px; right: 20px; bottom: 22px;
+  height: 130px;
+  background: #d81e2a;
+  border-radius: 18px;
+  border: 3px solid rgba(0,0,0,.18);
+}
+.lid{
+  position:absolute; left: 12px; right: 12px; bottom: 140px;
+  height: 62px;
+  background: #f1c40f;
+  border-radius: 18px;
+  border: 3px solid rgba(0,0,0,.18);
+}
+.bow{
+  position:absolute; left: 50%; top: 44%;
+  width: 26px; height: 150px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,.9);
+  border-radius: 14px;
+  border: 3px solid rgba(0,0,0,.14);
+}
+.shine{
+  position:absolute; inset:0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(255,255,255,0) 50%);
+  border-radius: 22px;
+  pointer-events:none;
+}
+.giftHint{
+  position:absolute;
+  left:50%; top: 10px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.30);
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+}
+
+.reveal{
+  display:none;
+  width:min(760px, 100%);
+  background: rgba(0,0,0,.28);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 18px;
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+.reveal.show{display:block}
+.revealTitle{font-weight: 1000; font-size: 18px; margin-bottom:10px}
+
+.codeWrap{
+  display:flex;
+  gap:10px;
+  align-items:stretch;
+  flex-wrap:wrap;
+}
+code{
+  flex: 1 1 280px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 14px;
+  padding: 12px 12px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .6px;
+}
+.btn{
+  flex: 0 0 auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.12);
+  color: var(--text);
+  padding: 12px 14px;
+  font-weight: 900;
+  cursor:pointer;
+}
+.btn:active{transform: translateY(1px)}
+.toast{
+  opacity:0;
+  margin-top: 10px;
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+  transition: opacity .25s ease;
+}
+.toast.show{opacity:1}
+.small{margin-top:8px; color:var(--muted); font-weight:650; font-size: 13px}
+
+/* Mobile tweaks */
+@media (max-width: 520px){
+  .badge{font-size:13px}
+  .cow-sled{transform: scale(.95)}
+  .speech{max-width: 160px; font-size: 13px}
+    }
