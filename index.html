@@ -3,134 +3,160 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Michelles Geschenk 🎁</title>
+  <title>Michelle’s Geschenk 🎄</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div id="bgSnow"></div>
+  <div id="app" class="app">
+    <header class="topbar">
+      <div class="title">
+        <div class="kicker">Frohe Weihnachten,</div>
+        <div class="headline">Michelle, du Weihnachtswunder ✨</div>
+      </div>
+      <div class="hint" id="hint">Tipp: Tippe Santa auf der Kuh an, um ihn zu landen!</div>
+    </header>
 
-  <!-- INTRO -->
-  <main id="sceneIntro" class="scene active" aria-live="polite">
-    <div class="topline">
-      <div class="badge">🎄 Frohe Weihnachten, <span class="name">Michelle</span> — du Weihnachtswunder ✨</div>
-      <button id="btnSound" class="chip" type="button" aria-pressed="false">🔈 Sound: AUS</button>
-    </div>
+    <!-- STAGE 1: Flug + Antippen -->
+    <section id="stage1" class="stage stage--active">
+      <div class="sky">
+        <div class="snow" aria-hidden="true"></div>
 
-    <div class="sky">
-      <div id="cowSled" class="cow-sled" role="button" tabindex="0" aria-label="Santa auf der Kuh antippen">
-        <div class="cow">
-          <div class="cow-ear ear-l"></div>
-          <div class="cow-ear ear-r"></div>
-          <div class="cow-head">
-            <div class="cow-eye eye-l"></div>
-            <div class="cow-eye eye-r"></div>
-            <div class="cow-nose"></div>
-          </div>
-          <div class="cow-body">
-            <div class="spot s1"></div>
-            <div class="spot s2"></div>
-            <div class="spot s3"></div>
-            <div class="udder">
-              <div class="teat t1"></div>
-              <div class="teat t2"></div>
-              <div class="teat t3"></div>
-              <div class="teat t4"></div>
+        <div class="speech" id="speech">
+          <div class="speech__bubble">Hilfeee, Michelle! Tippe mich, sonst lande ich im Schnee! 😵‍💫</div>
+          <div class="speech__sub">Ziel: <b><span id="tapNeed">2</span> Treffer</b> auf Santa/Kuh</div>
+        </div>
+
+        <button id="santaCow" class="santaCow" type="button" aria-label="Santa auf Kuh antippen">
+          <!-- Inline SVG (Comic-Stil, aber klar als Santa erkennbar) -->
+          <svg viewBox="0 0 520 260" width="520" height="260" role="img" aria-label="Weihnachtsmann auf Kuh">
+            <!-- Shadow -->
+            <ellipse class="svgShadow" cx="260" cy="230" rx="170" ry="18"></ellipse>
+
+            <!-- Cow -->
+            <g class="cow">
+              <ellipse class="cowBody" cx="255" cy="160" rx="165" ry="70"></ellipse>
+              <ellipse class="cowSpot" cx="210" cy="165" rx="55" ry="30"></ellipse>
+              <ellipse class="cowSpot" cx="300" cy="145" rx="35" ry="22"></ellipse>
+
+              <!-- Head -->
+              <g class="cowHead">
+                <ellipse class="cowHeadMain" cx="410" cy="150" rx="58" ry="44"></ellipse>
+                <ellipse class="cowSnout" cx="440" cy="165" rx="38" ry="26"></ellipse>
+                <circle class="cowNose" cx="430" cy="168" r="4"></circle>
+                <circle class="cowNose" cx="450" cy="168" r="4"></circle>
+                <circle class="cowEye" cx="398" cy="145" r="6"></circle>
+                <path class="cowSmile" d="M420 185 q20 10 40 0"></path>
+                <path class="cowHorn" d="M380 120 q-20 -18 -40 5 q25 8 40 -5"></path>
+                <path class="cowHorn" d="M415 112 q-10 -22 -32 -8 q20 16 32 8"></path>
+              </g>
+
+              <!-- Legs -->
+              <rect class="cowLeg" x="165" y="195" width="22" height="55" rx="10"></rect>
+              <rect class="cowLeg" x="220" y="200" width="22" height="50" rx="10"></rect>
+              <rect class="cowLeg" x="295" y="200" width="22" height="50" rx="10"></rect>
+              <rect class="cowLeg" x="345" y="195" width="22" height="55" rx="10"></rect>
+
+              <!-- Udder -->
+              <g class="udder">
+                <ellipse class="udderMain" cx="255" cy="195" rx="45" ry="28"></ellipse>
+                <rect class="teat" x="235" y="210" width="10" height="20" rx="5"></rect>
+                <rect class="teat" x="255" y="214" width="10" height="18" rx="5"></rect>
+                <rect class="teat" x="275" y="210" width="10" height="20" rx="5"></rect>
+              </g>
+
+              <!-- Tail -->
+              <path class="cowTail" d="M115 160 q-35 25 -10 55"></path>
+              <circle class="cowTailTip" cx="108" cy="217" r="10"></circle>
+            </g>
+
+            <!-- Santa -->
+            <g class="santa">
+              <!-- Body (badehose + dicker Bauch, cartoon) -->
+              <ellipse class="santaBelly" cx="250" cy="92" rx="62" ry="48"></ellipse>
+              <rect class="santaShorts" x="215" y="110" width="70" height="35" rx="18"></rect>
+
+              <!-- Arms -->
+              <path class="santaArm" d="M205 92 q-35 20 -22 48"></path>
+              <path class="santaArm" d="M292 92 q35 20 22 48"></path>
+
+              <!-- Head -->
+              <g class="santaHead">
+                <circle class="santaFace" cx="250" cy="58" r="30"></circle>
+                <circle class="santaEye" cx="240" cy="56" r="4"></circle>
+                <circle class="santaEye" cx="260" cy="56" r="4"></circle>
+                <path class="santaNose" d="M248 60 q6 2 0 8 q-6 -2 0 -8"></path>
+
+                <!-- Beard -->
+                <path class="santaBeard" d="M225 65 q25 40 50 0 q-4 40 -25 45 q-21 -5 -25 -45"></path>
+                <path class="santaMouth" d="M242 72 q8 8 16 0"></path>
+
+                <!-- Hat -->
+                <path class="hatRed" d="M226 52 q24 -30 58 -6 q-30 8 -58 6"></path>
+                <path class="hatWhite" d="M225 52 q30 12 60 0 q-4 14 -30 14 q-26 0 -30 -14"></path>
+                <circle class="hatPom" cx="292" cy="47" r="10"></circle>
+              </g>
+            </g>
+          </svg>
+
+          <span class="tapBadge" id="tapBadge">Treffer: 0 / 2</span>
+        </button>
+
+        <div class="ground" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- STAGE 2: Schnee wegwischen -->
+    <section id="stage2" class="stage">
+      <div class="panel">
+        <h2>Oh nein! Santa ist im Schnee gelandet ❄️</h2>
+        <p>Wisch den Schnee weg, damit er wieder aufstehen kann.</p>
+
+        <div class="scratchWrap">
+          <div class="under">
+            <div class="rescued">
+              <div class="danceSanta" aria-hidden="true">🎅</div>
+              <div class="rescuedText">
+                <div class="big">Danke, Michelle!!</div>
+                <div class="small">Kurzer Happy-Dance… wackel wackel 🕺</div>
+              </div>
             </div>
           </div>
-          <div class="cow-leg leg1"></div>
-          <div class="cow-leg leg2"></div>
-          <div class="cow-leg leg3"></div>
-          <div class="cow-leg leg4"></div>
+          <canvas id="scratch" class="scratch" width="900" height="520" aria-label="Schnee wegwischen"></canvas>
         </div>
 
-        <div class="santa">
-          <div class="hat"></div>
-          <div class="head">
-            <div class="beard"></div>
-            <div class="face">
-              <div class="eye e1"></div>
-              <div class="eye e2"></div>
-              <div class="nose"></div>
-              <div class="smile"></div>
-            </div>
+        <button id="toStage3" class="btn btn--disabled" disabled>Weiter zum Geschenk 🎁</button>
+      </div>
+    </section>
+
+    <!-- STAGE 3: Geschenk öffnen -->
+    <section id="stage3" class="stage">
+      <div class="panel">
+        <h2>Okay… jetzt das Geschenk! 🎁</h2>
+        <p class="muted">Schüttel dein Handy <b>oder</b> tippe das Geschenk mehrfach an.</p>
+
+        <button id="gift" class="gift" type="button" aria-label="Geschenk schütteln oder antippen">
+          <div class="gift__lid"></div>
+          <div class="gift__box"></div>
+          <div class="gift__ribbon"></div>
+          <div class="gift__tag">Schütteln / Tippen</div>
+        </button>
+
+        <div id="codeCard" class="codeCard hidden" role="region" aria-label="Steam Code">
+          <div class="codeTitle">Steam-Guthaben-Code</div>
+          <div class="codeRow">
+            <code id="steamCode">STEAM-CODE-HIER-EINFÜGEN</code>
+            <button id="copyBtn" class="btn">Kopieren</button>
           </div>
-          <div class="torso"></div>
-          <div class="shorts"></div>
-          <div class="arm a1"></div>
-          <div class="arm a2"></div>
-          <div class="hand h1"></div>
-          <div class="hand h2"></div>
-          <div class="speech" id="speechBubble">Michelle! Hilfe! Tippe mich! 😂</div>
+          <div id="copyMsg" class="copyMsg" aria-live="polite"></div>
         </div>
-
-        <div class="trail"></div>
       </div>
+    </section>
 
-      <div class="hint">
-        <div class="hintTitle">👆 Schritt 1</div>
-        <div class="hintText">Tippe Santa (oder klicke ihn), damit die Kuh landet.</div>
-      </div>
-    </div>
-
-    <div class="footerNote">Tipp: Wenn du am Handy bist – tippen reicht. Schütteln kommt später. 🎁</div>
-  </main>
-
-  <!-- SCHNEE WEGWISCHEN -->
-  <main id="sceneSnow" class="scene" aria-live="polite">
-    <div class="topline">
-      <div class="badge">❄️ Schritt 2: Wisch den Schnee weg!</div>
-      <button id="btnSkipSnow" class="chip" type="button">Überspringen</button>
-    </div>
-
-    <div class="snowStage">
-      <div class="crashText">*WUMMS* … Santa ist im Schnee gelandet 😵‍💫</div>
-
-      <div id="snowBoard" class="snowBoard" aria-label="Schnee wegwischen">
-        <!-- Snow dots werden per JS erzeugt -->
-      </div>
-
-      <div class="hint">
-        <div class="hintTitle">🧤</div>
-        <div class="hintText">Zieh mit dem Finger/Maus über den Schnee, bis genug weg ist.</div>
-      </div>
-    </div>
-  </main>
-
-  <!-- GESCHENK -->
-  <main id="sceneGift" class="scene" aria-live="polite">
-    <div class="topline">
-      <div class="badge">🎁 Schritt 3: Geschenk schütteln</div>
-      <button id="btnReset" class="chip" type="button">Nochmal 😄</button>
-    </div>
-
-    <div class="giftStage">
-      <div class="message">
-        <div class="msgTitle">Michelle, du Weihnachtswunder ✨</div>
-        <div class="msgText">Ich hab dir was gebracht… aber nur, wenn du’s wirklich willst 😏</div>
-      </div>
-
-      <div id="giftBox" class="giftBox" role="button" tabindex="0" aria-label="Geschenk schütteln oder antippen">
-        <div class="lid"></div>
-        <div class="bow"></div>
-        <div class="box"></div>
-        <div class="shine"></div>
-        <div class="giftHint" id="giftHint">Schütteln / Antippen!</div>
-      </div>
-
-      <section id="reveal" class="reveal" aria-label="Gutschein-Code">
-        <div class="revealTitle">🎮 Dein Steam-Code</div>
-        <div class="codeWrap">
-          <code id="steamCode">STEAM-CODE-HIER-EINFÜGEN</code>
-          <button id="btnCopy" class="btn" type="button">Kopieren</button>
-        </div>
-        <div id="copyToast" class="toast" role="status" aria-live="polite">Kopiert ✅</div>
-        <div class="small">
-          Einlösen in Steam: „Spiele“ → „Ein Produkt bei Steam aktivieren…“ → Code eingeben.
-        </div>
-      </section>
-    </div>
-  </main>
+    <footer class="footer">
+      <span>Gemacht mit ❤️ für Michelle</span>
+    </footer>
+  </div>
 
   <script src="main.js"></script>
 </body>
