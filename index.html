@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Frohe Weihnachten, Michelle ✨</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Schnee-Canvas (klickt NICHT im Weg) -->
+  <canvas id="snow" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <div class="flyby" aria-hidden="true">
+      <div class="cow">🐄</div>
+      <div class="santa">🎅</div>
+      <div class="trail">✨✨✨</div>
+    </div>
+
+    <h1>
+      Frohe Weihnachten,<br />
+      <span class="name">Michelle</span> <span class="sparkle">✨</span>
+    </h1>
+
+    <p class="sub">
+      Du Weihnachtswunder… der Weihnachtsmann ist schon unterwegs – <b>auf einer Kuh</b>. 🐄🎅
+    </p>
+  </header>
+
+  <main class="card" role="main">
+    <section class="stage">
+      <div class="gift-wrap" aria-hidden="true">
+        <div class="gift" id="gift">
+          <div class="gift-lid"></div>
+          <div class="gift-box"></div>
+          <div class="gift-bow"></div>
+        </div>
+      </div>
+
+      <p class="hint" id="hint">
+        Mini-Spiel: <b>Schüttel</b> das Geschenk! (Auf dem Handy: tippen zählt auch 😉)
+      </p>
+
+      <button id="shakeBtn" class="btn" type="button">
+        Geschenk schütteln
+      </button>
+
+      <div class="meter" aria-hidden="true">
+        <div class="meter-bar" id="meterBar"></div>
+      </div>
+
+      <p class="tiny" id="tinyInfo">0 / 30 Schüttler</p>
+    </section>
+  </main>
+
+  <!-- Reveal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
+      <p class="modal-text">
+        Michelle, du Weihnachtswunder — hier ist dein Code:
+      </p>
+
+      <div class="codebox">
+        <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
+        <button id="copyBtn" class="btn small" type="button">Kopieren</button>
+      </div>
+
+      <p class="modal-text smallish">
+        Tipp: In Steam → „Guthabencode einlösen“ → einfügen. 💛
+      </p>
+
+      <button id="closeBtn" class="btn ghost" type="button">Nochmal schütteln 😄</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
