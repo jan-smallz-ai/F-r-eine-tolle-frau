@@ -3,90 +3,78 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Frohe Weihnachten, Michelle 🎄</title>
+  <title>Frohe Weihnachten, Michelle ✨</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="main.js"></script>
 </head>
 
 <body>
-  <!-- Schnee -->
-  <div id="snow" aria-hidden="true"></div>
-
-  <!-- Santa auf Kuh (Anflug) -->
-  <div id="santaCow" aria-hidden="true">
-    <span class="ride">🎅</span><span class="cow">🐄</span>
-    <span class="trail">✨✨✨</span>
-  </div>
+  <!-- Hintergrund-Schnee -->
+  <div class="snow" aria-hidden="true"></div>
 
   <main class="wrap">
     <header class="hero">
-      <div class="giftIcon" aria-hidden="true">🎁</div>
-      <h1>Frohe Weihnachten,<br><span class="name">Michelle</span> <span aria-hidden="true">✨</span></h1>
+      <div class="badge" aria-hidden="true">🎁</div>
+      <h1>Frohe Weihnachten,<br><span class="gold">Michelle</span> ✨</h1>
       <p class="sub">
-        Du Weihnachtswunder… der Weihnachtsmann ist schon unterwegs — auf einer Kuh. <span aria-hidden="true">🐄🎅</span>
+        Du Weihnachtswunder… der Weihnachtsmann ist schon unterwegs —
+        <span class="nowrap">auf einer Kuh.</span> 🐄🎅
       </p>
     </header>
 
+    <!-- Santa auf Kuh: fliegt oben vorbei -->
+    <section class="sky" aria-hidden="true">
+      <div class="santaCow" id="santaCow">
+        <span class="cow">🐄</span><span class="santa">🎅</span>
+        <span class="trail">💨</span>
+      </div>
+    </section>
+
     <section class="card">
-      <div class="scene" aria-hidden="true">
-        <div class="present" id="present">
-          <div class="lid"></div>
-          <div class="box"></div>
-          <div class="bow"></div>
+      <div class="scene">
+        <div class="gift" id="gift" aria-hidden="true">
+          <div class="giftTop"></div>
+          <div class="giftBox"></div>
+          <div class="giftBow"></div>
+        </div>
+
+        <div class="hud">
+          <div class="stepTitle" id="stepTitle">Schritt 1/3: Kuh landen lassen 🐄</div>
+          <div class="meter" aria-hidden="true">
+            <div class="meterBar" id="meterBar"></div>
+          </div>
+          <p class="tiny" id="tinyInfo">
+            Tipp: Tippe auf „Landen!“ bis die Anzeige voll ist.
+          </p>
         </div>
       </div>
 
-      <div class="instructions">
-        <p class="hint" id="hintLine"><strong>3 Schritte</strong> bis zum Geschenk 🎯</p>
-        <ol class="steps" id="stepsList">
-          <li><span class="dot" id="dot1"></span> Start drücken</li>
-          <li><span class="dot" id="dot2"></span> Rodeo-Meter füllen (schütteln ODER tippen)</li>
-          <li><span class="dot" id="dot3"></span> 5 Schneeflocken fangen</li>
-        </ol>
-      </div>
-
-      <button class="btn primary" id="startBtn" type="button">Geschenk starten</button>
-
-      <div class="mini" id="miniArea" hidden>
-        <div class="meter" aria-label="Rodeo-Meter">
-          <div class="meterFill" id="meterFill"></div>
-        </div>
-        <p class="tiny" id="miniText">Los geht’s: Tipp schnell auf den Button oder schüttel dein Handy 😄</p>
-
-        <div class="controls">
-          <button class="btn" id="tapBtn" type="button">Tippen!</button>
-          <button class="btn ghost" id="skipMotionBtn" type="button">Schütteln klappt nicht?</button>
-        </div>
-
-        <div class="catchArea" id="catchArea" hidden>
-          <p class="tiny">Fang <strong><span id="catchLeft">5</span></strong> Schneeflocken, dann gibt’s den Code ❄️</p>
-        </div>
+      <div class="controls">
+        <button class="btn primary" id="actionBtn">Landen!</button>
+        <button class="btn ghost" id="altBtn" type="button">Ich will klicken (ohne Schütteln)</button>
       </div>
 
       <p class="ps">PS: Wenn du lachst, war’s Absicht. 😄</p>
     </section>
   </main>
 
-  <!-- Reveal Modal -->
-  <div class="modal" id="modal" aria-hidden="true">
+  <!-- Reveal-Modal (kommt ERST nach Schritt 3) -->
+  <div class="modal hidden" id="modal" aria-hidden="true">
     <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
-      <p class="modalText">
-        Michelle, du Weihnachtswunder — hier ist dein Steam-Code:
-      </p>
+      <p class="modalText">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
 
       <div class="codeBox">
-        <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
-        <button class="btn small" id="copyBtn" type="button">Kopieren</button>
+        <code id="codeText">STEAM_CODE_HIER_EINFUEGEN</code>
+        <button class="btn primary" id="copyBtn" type="button">Kopieren</button>
       </div>
 
-      <p class="modalText smallish">
+      <p class="hint">
         Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.
       </p>
 
-      <button class="btn primary" id="closeBtn" type="button">Schließen</button>
+      <button class="btn ghost big" id="closeBtn" type="button">Schließen</button>
     </div>
   </div>
-
-  <script src="main.js" defer></script>
 </body>
-  </html>
+</html>
