@@ -2,79 +2,88 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Frohe Weihnachten, Michelle ✨</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <!-- Schnee-Canvas (klickt NICHT im Weg) -->
-  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="bg"></div>
 
-  <header class="top">
-    <div class="flyby" aria-hidden="true">
-      <div class="cow">🐄</div>
-      <div class="santa">🎅</div>
-      <div class="trail">✨✨✨</div>
-    </div>
+  <!-- Schnee -->
+  <div id="snow" aria-hidden="true"></div>
 
-    <h1>
-      Frohe Weihnachten,<br />
-      <span class="name">Michelle</span> <span class="sparkle">✨</span>
-    </h1>
+  <!-- Santa auf Kuh fliegt oben lang -->
+  <div class="flyby" aria-hidden="true">
+    <div class="santaCow" title="🎅 auf 🐄 im Anflug">🎅🐄</div>
+    <div class="trail">✨✨✨</div>
+  </div>
 
-    <p class="sub">
-      Du Weihnachtswunder… der Weihnachtsmann ist schon unterwegs – <b>auf einer Kuh</b>. 🐄🎅
-    </p>
-  </header>
+  <main class="wrap">
+    <header class="hero">
+      <div class="badge" aria-hidden="true">🎁</div>
+      <h1>Frohe Weihnachten, <span class="name">Michelle</span> ✨</h1>
+      <p class="sub">
+        Du Weihnachtswunder… der Weihnachtsmann ist schon unterwegs – auf einer Kuh. 🐄🎅
+      </p>
+    </header>
 
-  <main class="card" role="main">
     <section class="stage">
-      <div class="gift-wrap" aria-hidden="true">
-        <div class="gift" id="gift">
-          <div class="gift-lid"></div>
-          <div class="gift-box"></div>
-          <div class="gift-bow"></div>
+      <div class="card">
+        <div class="santaHead" aria-hidden="true">
+          <div class="hat"></div>
+          <div class="face"></div>
+          <div class="beard"></div>
+          <div class="nose"></div>
+        </div>
+
+        <div class="giftArea">
+          <div id="gift" class="gift" role="img" aria-label="Geschenk">
+            <div class="lid"></div>
+            <div class="box"></div>
+            <div class="ribbonV"></div>
+            <div class="ribbonH"></div>
+            <div class="bow"></div>
+          </div>
+
+          <div class="hint">
+            <p class="hintTitle">Schüttel das Geschenk, um es zu öffnen 👀</p>
+            <p class="hintSmall">Am Handy geht’s auch mit Bewegung – oder einfach klicken.</p>
+
+            <div class="meter" aria-hidden="true">
+              <div id="meterBar" class="meterBar"></div>
+            </div>
+
+            <button id="shakeBtn" class="btn" type="button">Geschenk schütteln</button>
+          </div>
         </div>
       </div>
-
-      <p class="hint" id="hint">
-        Mini-Spiel: <b>Schüttel</b> das Geschenk! (Auf dem Handy: tippen zählt auch 😉)
-      </p>
-
-      <button id="shakeBtn" class="btn" type="button">
-        Geschenk schütteln
-      </button>
-
-      <div class="meter" aria-hidden="true">
-        <div class="meter-bar" id="meterBar"></div>
-      </div>
-
-      <p class="tiny" id="tinyInfo">0 / 30 Schüttler</p>
     </section>
+
+    <footer class="tiny">
+      <span>PS: Wenn du lachst, war’s Absicht. 😄</span>
+    </footer>
   </main>
 
-  <!-- Reveal -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <!-- Reveal Modal -->
+  <div id="modal" class="modal" hidden>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
-      <p class="modal-text">
-        Michelle, du Weihnachtswunder — hier ist dein Code:
-      </p>
+      <p class="modalText">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
 
-      <div class="codebox">
+      <div class="codeBox">
         <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
         <button id="copyBtn" class="btn small" type="button">Kopieren</button>
       </div>
 
-      <p class="modal-text smallish">
-        Tipp: In Steam → „Guthabencode einlösen“ → einfügen. 💛
+      <p class="tiny modalHint">
+        Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.
       </p>
 
-      <button id="closeBtn" class="btn ghost" type="button">Nochmal schütteln 😄</button>
+      <button id="closeBtn" class="btn ghost" type="button">Schließen</button>
     </div>
   </div>
 
-  <script src="game.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
