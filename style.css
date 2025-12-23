@@ -65,4 +65,269 @@ body{
 h1{
   margin:0;
   font-size: clamp(34px, 5.2vw, 56px);
-  line-height:1
+  line-height:1.02;
+  letter-spacing:.2px;
+}
+h1 .name{
+  color:var(--gold);
+  text-shadow: 0 10px 30px rgba(255,213,106,.18);
+}
+
+.sub{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size: clamp(16px, 2.4vw, 20px);
+  max-width: 54ch;
+}
+
+.stage{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
+  position:relative;
+  z-index:2;
+}
+
+.scene{
+  background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.06));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  padding:18px 14px 16px;
+  position:relative;
+  overflow:hidden;
+}
+
+.santaRow{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin-bottom:10px;
+}
+
+.santaCow{
+  font-size: clamp(34px, 6vw, 54px);
+  filter: drop-shadow(0 18px 26px rgba(0,0,0,.35));
+  animation: flyIn 1.6s ease-out both;
+}
+@keyframes flyIn{
+  0%{ transform: translateX(-30vw) translateY(-18px) rotate(-10deg); opacity:0; }
+  60%{ transform: translateX(0) translateY(0) rotate(3deg); opacity:1; }
+  100%{ transform: translateX(0) translateY(0) rotate(0deg); opacity:1; }
+}
+
+.wiggle{
+  display:inline-block;
+  animation: wiggle 2.2s ease-in-out infinite;
+  transform-origin: 50% 80%;
+}
+@keyframes wiggle{
+  0%,100%{ transform: rotate(-2deg) translateY(0); }
+  50%{ transform: rotate(2deg) translateY(-2px); }
+}
+
+/* Geschenk */
+.giftWrap{
+  display:grid;
+  place-items:center;
+  padding:18px 0 10px;
+}
+
+.gift{
+  width:min(320px, 78vw);
+  height:min(240px, 58vw);
+  max-height:280px;
+  position:relative;
+  border-radius:28px;
+  display:grid;
+  place-items:center;
+  transform: translateZ(0);
+}
+
+.gift .box{
+  width: 78%;
+  height: 62%;
+  border-radius:28px;
+  background: linear-gradient(180deg, #ff4d4d, #c5162b);
+  box-shadow: 0 30px 70px rgba(0,0,0,.35);
+  position:absolute;
+  bottom:0;
+  border: 1px solid rgba(255,255,255,.18);
+}
+
+.gift .lid{
+  width: 82%;
+  height: 26%;
+  border-radius:26px;
+  background: linear-gradient(180deg, #ff6666, #d11b33);
+  position:absolute;
+  top:18%;
+  border: 1px solid rgba(255,255,255,.18);
+  transform-origin: 12% 90%;
+}
+
+.gift .ribbonV{
+  width: 14%;
+  height: 66%;
+  background: linear-gradient(180deg, #ffd56a, #ffb52e);
+  position:absolute;
+  bottom:0;
+  border-radius:16px;
+  box-shadow: 0 14px 28px rgba(0,0,0,.20);
+}
+
+.gift .ribbonH{
+  width: 74%;
+  height: 14%;
+  background: linear-gradient(180deg, #ffd56a, #ffb52e);
+  position:absolute;
+  top:42%;
+  border-radius:16px;
+  box-shadow: 0 14px 28px rgba(0,0,0,.20);
+}
+
+.gift .bow{
+  position:absolute;
+  top:8%;
+  font-size: 46px;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.25));
+  animation: bowBounce 1.7s ease-in-out infinite;
+}
+@keyframes bowBounce{
+  0%,100%{ transform: translateY(0) rotate(-3deg); }
+  50%{ transform: translateY(-5px) rotate(3deg); }
+}
+
+/* Schüttel-Animation */
+.shake .box{ animation: shake 240ms linear infinite; }
+.shake .lid{ animation: lidWobble 240ms linear infinite; }
+@keyframes shake{
+  0%{ transform: translateX(0) rotate(0deg); }
+  25%{ transform: translateX(-3px) rotate(-1deg); }
+  50%{ transform: translateX(3px) rotate(1deg); }
+  75%{ transform: translateX(-2px) rotate(-.6deg); }
+  100%{ transform: translateX(0) rotate(0deg); }
+}
+@keyframes lidWobble{
+  0%{ transform: rotate(0deg); }
+  50%{ transform: rotate(-4deg); }
+  100%{ transform: rotate(0deg); }
+}
+
+.controls{
+  display:grid;
+  gap:10px;
+  justify-items:center;
+  padding: 8px 0 6px;
+}
+
+.hint{
+  margin:0;
+  color:var(--muted);
+  text-align:center;
+  font-size: 16px;
+}
+
+button.primary{
+  appearance:none;
+  border:0;
+  font-weight:800;
+  letter-spacing:.2px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: var(--cream);
+  color:#1b1b1b;
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+  width:min(360px, 90%);
+  cursor:pointer;
+}
+button.primary:active{ transform: translateY(1px); }
+
+.progress{
+  width:min(360px, 90%);
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.12);
+  overflow:hidden;
+}
+.progress > div{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, #ffd56a, #ffb52e);
+  border-radius:999px;
+}
+
+/* Reveal */
+.reveal{
+  display:none;
+  margin-top:10px;
+  padding:14px 12px;
+  border-radius:18px;
+  background: rgba(14,34,79,.62);
+  border:1px solid rgba(255,255,255,.12);
+}
+.reveal.show{ display:block; }
+
+.codeBox{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+}
+.code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 18px;
+  padding:10px 12px;
+  border-radius:14px;
+  background: rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.12);
+  user-select: all;
+}
+button.small{
+  appearance:none;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: var(--ink);
+  border-radius: 14px;
+  padding:10px 12px;
+  font-weight:800;
+  cursor:pointer;
+}
+button.small:active{ transform: translateY(1px); }
+
+.toast{
+  margin-top:10px;
+  font-size:14px;
+  color: var(--muted);
+}
+
+/* Schnee */
+.snow{
+  position:absolute;
+  inset:-40px -20px -20px -20px;
+  opacity:.9;
+  z-index:1;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.90) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 10%, rgba(255,255,255,.85) 0 1.8px, transparent 3px),
+    radial-gradient(circle at 40% 40%, rgba(255,255,255,.80) 0 1.6px, transparent 3px),
+    radial-gradient(circle at 85% 55%, rgba(255,255,255,.80) 0 2px, transparent 3px),
+    radial-gradient(circle at 10% 70%, rgba(255,255,255,.75) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 55% 75%, rgba(255,255,255,.88) 0 2px, transparent 3px);
+  background-size: 240px 240px, 260px 260px, 220px 220px, 280px 280px, 200px 200px, 300px 300px;
+  animation: snowFall 10s linear infinite;
+}
+@keyframes snowFall{
+  0%{ transform: translateY(-40px); }
+  100%{ transform: translateY(220px); }
+}
+
+/* Mobile spacing */
+@media (max-width:460px){
+  .card{ padding:18px 14px 16px; border-radius:22px; }
+  .badge{ width:50px; height:50px; border-radius:15px; }
+  }
