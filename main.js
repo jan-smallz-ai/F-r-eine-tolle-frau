@@ -1,150 +1,138 @@
-(() => {
-  const gift = document.getElementById("gift");
-  const shakeBtn = document.getElementById("shakeBtn");
-  const meterBar = document.getElementById("meterBar");
+// main.js – Geschenk 4 (Fix: Modal nicht automatisch öffnen)
+// Enthüllung erst nach "Schütteln" (oder Klicks am Handy/PC)
 
-  const modal = document.getElementById("modal");
-  const copyBtn = document.getElementById("copyBtn");
-  const closeBtn = document.getElementById("closeBtn");
-  const codeText = document.getElementById("codeText");
+const modal = document.getElementById("modal");
+const copyBtn = document.getElementById("copyBtn");
+const closeBtn = document.getElementById("closeBtn");
+const codeText = document.getElementById("codeText");
 
-  const snow = document.getElementById("snow");
+// Falls du im HTML schon einen Button hast, der "Geschenk schütteln" heißt,
+// gib ihm bitte id="shakeBtn". Wenn nicht: wir fangen trotzdem Klicks auf der Seite ab.
+const shakeBtn = document.getElementById("shakeBtn");
 
-  let progress = 0;
-  let opened = false;
+let progress = 0;
+let revealed = false;
 
-  // --- Snow generator (lightweight) ---
-  const flakes = 36;
-  for (let i = 0; i < flakes; i++) {
-    const s = document.createElement("span");
-    s.className = "snowflake";
-    s.textContent = Math.random() > 0.25 ? "❄️" : "✨";
-    s.style.left = Math.random() * 100 + "vw";
-    s.style.animationDuration = (6 + Math.random() * 8).toFixed(2) + "s";
-    s.style.animationDelay = (Math.random() * 6).toFixed(2) + "s";
-    s.style.opacity = (0.35 + Math.random() * 0.55).toFixed(2);
-    s.style.transform = `translateX(${(Math.random() * 40 - 20).toFixed(0)}px)`;
-    snow.appendChild(s);
-  }
+function openModal(){
+  if (revealed) return;
+  revealed = true;
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+}
 
-  function bumpProgress(amount) {
-    if (opened) return;
-    progress = Math.min(100, progress + amount);
-    meterBar.style.width = progress + "%";
+function closeModal(){
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+}
 
-    gift.classList.remove("shake");
-    // force reflow so animation always retriggers
-    void gift.offsetWidth;
-    gift.classList.add("shake");
+function bumpProgress(amount){
+  if (revealed) return;
+  progress = Math.min(100, progress + amount);
 
-    if (progress >= 100) {
-      openReveal();
-    }
-  }
+  // Optional: Wenn du irgendwo einen Progress-Balken hast:
+  const meter = document.querySelector("[data-meter]");
+  if (meter) meter.style.width = progress + "%";
 
-  function openReveal() {
-    opened = true;
-    modal.hidden = false;
+  // ab 100% enthüllen
+  if (progress >= 100) openModal();
+}
 
-    // little confetti-ish text burst
-    for (let i = 0; i < 16; i++) {
-      const p = document.createElement("div");
-      p.textContent = Math.random() > 0.5 ? "✨" : "🎉";
-      p.style.position = "fixed";
-      p.style.left = (10 + Math.random() * 80) + "vw";
-      p.style.top = (20 + Math.random() * 40) + "vh";
-      p.style.fontSize = (16 + Math.random() * 26) + "px";
-      p.style.zIndex = 60;
-      p.style.pointerEvents = "none";
-      p.style.opacity = "0.95";
-      p.style.transition = "transform 900ms ease, opacity 900ms ease";
-      document.body.appendChild(p);
+// --- Klick-Interaktion (PC & Handy) ---
+function clickShake(){
+  // kleine, schnelle Schritte – fühlt sich nach „Minispiel“ an
+  bumpProgress(14);
+}
 
-      requestAnimationFrame(() => {
-        p.style.transform = `translateY(${80 + Math.random() * 160}px) rotate(${(Math.random() * 140 - 70)}deg)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => p.remove(), 950);
-    }
-  }
-
-  function closeReveal() {
-    modal.hidden = true;
-  }
-
-  // Click/tap interactions
-  shakeBtn.addEventListener("click", () => bumpProgress(18));
-  gift.addEventListener("click", () => bumpProgress(14));
-
-  closeBtn.addEventListener("click", closeReveal);
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeReveal();
+// Button, falls vorhanden
+if (shakeBtn){
+  shakeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    clickShake();
   });
+}
 
-  // Copy button
-  copyBtn.addEventListener("click", async () => {
-    const text = codeText.textContent.trim();
+// Fallback: Tippen/Klicken irgendwo auf Geschenkbereich, wenn Button fehlt
+document.addEventListener("click", (e) => {
+  // Wenn Modal offen ist: Klicks nicht als Schütteln zählen
+  if (modal.classList.contains("show")) return;
 
-    try {
-      await navigator.clipboard.writeText(text);
-      copyBtn.textContent = "Kopiert ✅";
-      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
-    } catch {
-      // Fallback: select text
-      const range = document.createRange();
-      range.selectNodeContents(codeText);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      copyBtn.textContent = "Markiert ✅";
-      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
-    }
-  });
+  // Wenn jemand auf "Kopieren/Schließen" klickt, nicht mitzählen
+  if (e.target === copyBtn || e.target === closeBtn) return;
 
-  // --- Optional: real "shake" on mobile (DeviceMotion) ---
-  let last = 0;
-  function onMotion(e) {
-    const a = e.accelerationIncludingGravity;
-    if (!a) return;
+  clickShake();
+}, { passive: true });
 
-    const now = Date.now();
-    if (now - last < 220) return;
+// --- Bewegungssensor (Handy schütteln) ---
+let lastShake = 0;
 
-    const x = Math.abs(a.x || 0);
-    const y = Math.abs(a.y || 0);
-    const z = Math.abs(a.z || 0);
-    const strength = x + y + z;
+function handleMotion(event){
+  if (revealed) return;
 
-    // threshold tuned for most phones
-    if (strength > 26) {
-      last = now;
-      bumpProgress(10);
-    }
+  const a = event.accelerationIncludingGravity;
+  if (!a) return;
+
+  const x = a.x || 0;
+  const y = a.y || 0;
+  const z = a.z || 0;
+
+  const magnitude = Math.sqrt(x*x + y*y + z*z);
+  const now = Date.now();
+
+  // simple shake detection
+  if (magnitude > 18 && (now - lastShake) > 250){
+    lastShake = now;
+    bumpProgress(22);
   }
+}
 
-  function enableMotion() {
-    // iOS asks permission only after user gesture
-    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
-      DeviceMotionEvent.requestPermission()
-        .then((state) => {
-          if (state === "granted") {
-            window.addEventListener("devicemotion", onMotion, { passive: true });
-          }
-        })
-        .catch(() => {});
-    } else {
-      window.addEventListener("devicemotion", onMotion, { passive: true });
+// iOS braucht Permission – wir versuchen’s freundlich
+async function enableMotion(){
+  try{
+    if (typeof DeviceMotionEvent !== "undefined" &&
+        typeof DeviceMotionEvent.requestPermission === "function"){
+      const res = await DeviceMotionEvent.requestPermission();
+      if (res === "granted"){
+        window.addEventListener("devicemotion", handleMotion, { passive: true });
+      }
+    }else{
+      window.addEventListener("devicemotion", handleMotion, { passive: true });
     }
+  }catch(_){
+    // Wenn Permission nicht klappt: ist nicht schlimm – Klick funktioniert trotzdem.
   }
+}
 
-  // enable motion after first user interaction (button or gift)
-  const oneTime = () => {
-    enableMotion();
-    document.removeEventListener("click", oneTime);
-    document.removeEventListener("touchstart", oneTime);
-  };
-  document.addEventListener("click", oneTime, { once: true });
-  document.addEventListener("touchstart", oneTime, { once: true });
+// Wir aktivieren Motion beim ersten User-Input (wichtig für Mobile Browser Regeln)
+window.addEventListener("touchstart", enableMotion, { once: true, passive: true });
+window.addEventListener("click", enableMotion, { once: true, passive: true });
 
-})();
+// --- Copy ---
+copyBtn?.addEventListener("click", async () => {
+  const text = (codeText?.textContent || "").trim();
+  try{
+    await navigator.clipboard.writeText(text);
+    copyBtn.textContent = "Kopiert ✅";
+    setTimeout(() => copyBtn.textContent = "Kopieren", 1200);
+  }catch(_){
+    // Fallback
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    copyBtn.textContent = "Kopiert ✅";
+    setTimeout(() => copyBtn.textContent = "Kopieren", 1200);
+  }
+});
+
+closeBtn?.addEventListener("click", closeModal);
+
+// Klick auf dunklen Hintergrund schließt auch
+modal?.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
+// WICHTIG: KEIN openModal() beim Laden!
+// -> Modal bleibt zu, bis progress >= 100
