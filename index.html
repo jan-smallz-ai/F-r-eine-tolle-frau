@@ -64,26 +64,29 @@
       <span>PS: Wenn du lachst, war’s Absicht. 😄</span>
     </footer>
   </main>
-
-  <!-- Reveal Modal -->
-  <div id="modal" class="modal" hidden>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<!-- Reveal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
       <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
-      <p class="modalText">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
 
-      <div class="codeBox">
+      <p class="modal-text">
+        Michelle, du Weihnachtswunder – hier ist dein Steam-Code:
+      </p>
+
+      <div class="codebox">
         <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
-        <button id="copyBtn" class="btn small" type="button">Kopieren</button>
+        <button id="copyBtn" class="btn btn-gold" type="button">Kopieren</button>
       </div>
 
-      <p class="tiny modalHint">
+      <p class="modal-text smallish">
         Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.
       </p>
 
-      <button id="closeBtn" class="btn ghost" type="button">Schließen</button>
+      <button id="closeBtn" class="btn" type="button">Schließen</button>
     </div>
   </div>
 
   <script src="main.js"></script>
 </body>
 </html>
+  
