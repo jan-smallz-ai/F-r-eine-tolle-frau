@@ -1,348 +1,216 @@
-// ====== Einstellungen ======
-const STEAM_CODE = "STEAM-CODE-HIER-EINFÜGEN"; // <-- HIER später deinen echten Code rein
+(() => {
+  const $ = (s) => document.querySelector(s);
 
-// Tap-Landing
-const TAPS_NEEDED = 2;
+  const sceneIntro  = $("#sceneIntro");
+  const sceneSnow   = $("#sceneSnow");
+  const sceneThanks = $("#sceneThanks");
+  const sceneGift   = $("#sceneGift");
 
-// Scratch-Off (wie viel % müssen weg sein)
-const SCRATCH_CLEAR_THRESHOLD = 0.62;
+  const santaCow = $("#santaCow");
+  const toGiftBtn = $("#toGift");
 
-// Geschenk: Tippen oder Schütteln bis Reveal
-const GIFT_TAPS_NEEDED = 4;
-const SHAKE_THRESHOLD = 16; // grob, je nach Handy
+  const snowCanvas = $("#snowCanvas");
+  const reveal = $("#reveal");
+  const giftBox = $("#giftBox");
+  const codeText = $("#codeText");
+  const copyBtn = $("#copyBtn");
+  const copyMsg = $("#copyMsg");
 
-// ====== DOM ======
-const stage1 = document.getElementById("stage1");
-const stage2 = document.getElementById("stage2");
-const stage3 = document.getElementById("stage3");
+  // ✅ HIER später deinen echten Code einfügen (du ersetzt nur den Text im HTML oder hier)
+  // Wenn du es lieber nur im HTML ersetzt: so lassen.
+  // codeText.textContent = "STEAM-CODE-HIER-EINFÜGEN";
 
-const hint = document.getElementById("hint");
-const santaCow = document.getElementById("santaCow");
-const tapBadge = document.getElementById("tapBadge");
-const tapNeed = document.getElementById("tapNeed");
-
-const scratch = document.getElementById("scratch");
-const toStage3 = document.getElementById("toStage3");
-
-const gift = document.getElementById("gift");
-const codeCard = document.getElementById("codeCard");
-const steamCodeEl = document.getElementById("steamCode");
-const copyBtn = document.getElementById("copyBtn");
-const copyMsg = document.getElementById("copyMsg");
-
-// ====== State ======
-let taps = 0;
-let giftTaps = 0;
-let landed = false;
-let audioUnlocked = false;
-
-// ====== Helpers ======
-function showStage(n){
-  stage1.classList.remove("stage--active");
-  stage2.classList.remove("stage--active");
-  stage3.classList.remove("stage--active");
-  hint.textContent = "";
-
-  if(n === 1){
-    stage1.classList.add("stage--active");
-    hint.textContent = "Tipp: Tippe Santa auf der Kuh an, um ihn zu landen!";
+  function showScene(target) {
+    [sceneIntro, sceneSnow, sceneThanks, sceneGift].forEach(s => s.classList.remove("scene--active"));
+    target.classList.add("scene--active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  if(n === 2){
-    stage2.classList.add("stage--active");
-    hint.textContent = "Wisch den Schnee weg – dann geht’s weiter.";
-  }
-  if(n === 3){
-    stage3.classList.add("stage--active");
-    hint.textContent = "Schütteln oder Tippen – erst dann kommt der Code.";
-  }
-}
 
-function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+  // ---------- Schritt 1: Antippen -> Crash ----------
+  function triggerCrash() {
+    // Stoppt nicht die Loop-Animation, aber wir “crashen” visuell weg
+    santaCow.classList.add("crash");
+    santaCow.setAttribute("aria-disabled", "true");
 
-// Kleiner “Jingle” (WebAudio), läuft erst nach User-Interaktion
-let audioCtx = null;
-function tryUnlockAudio(){
-  if(audioUnlocked) return;
-  audioUnlocked = true;
-  try{
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }catch(e){
-    audioCtx = null;
-  }
-}
-function beep(freq, time=0.08, gain=0.08, when=0){
-  if(!audioCtx) return;
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type = "sine";
-  o.frequency.value = freq;
-  g.gain.value = gain;
-  o.connect(g); g.connect(audioCtx.destination);
-  const t0 = audioCtx.currentTime + when;
-  o.start(t0);
-  o.stop(t0 + time);
-}
-function playTinyJingle(){
-  if(!audioCtx) return;
-  // kurzer, lustiger Klang (kein Lied)
-  beep(880, .07, .06, 0.00);
-  beep(660, .07, .06, 0.08);
-  beep(990, .09, .07, 0.16);
-  beep(1320,.11, .07, 0.28);
-}
-
-// ====== STAGE 1: Tap-Landing ======
-tapNeed.textContent = String(TAPS_NEEDED);
-tapBadge.textContent = `Treffer: 0 / ${TAPS_NEEDED}`;
-
-function registerTap(){
-  if(landed) return;
-  tryUnlockAudio();
-
-  taps++;
-  tapBadge.textContent = `Treffer: ${taps} / ${TAPS_NEEDED}`;
-
-  // kleines Feedback
-  santaCow.animate(
-    [{ transform: "translate(-50%,-50%) scale(1)" }, { transform: "translate(-50%,-50%) scale(0.97)" }, { transform: "translate(-50%,-50%) scale(1)" }],
-    { duration: 160 }
-  );
-
-  if(taps >= TAPS_NEEDED){
-    landed = true;
-    playTinyJingle();
-
-    // Flug stoppen + “Absturz” in Stage 2
-    santaCow.style.animation = "none";
-    santaCow.style.left = "55%";
-    santaCow.style.top = "40%";
-
-    // kleiner Drop
-    santaCow.animate(
-      [{ transform: "translate(-50%,-50%) rotate(0deg)" }, { transform: "translate(-50%,-10%) rotate(6deg)" }],
-      { duration: 650, easing: "cubic-bezier(.2,.9,.2,1)", fill: "forwards" }
-    );
-
+    // nach Crash zur Schnee-Szene
     setTimeout(() => {
-      showStage(2);
-      initScratch();
-    }, 680);
+      showScene(sceneSnow);
+      initSnowWipe();
+    }, 820);
   }
-}
 
-santaCow.addEventListener("pointerdown", registerTap, { passive: true });
+  // Click + Keyboard (Enter/Space) robust
+  santaCow.addEventListener("click", triggerCrash);
+  santaCow.addEventListener("touchstart", triggerCrash, { passive: true });
+  santaCow.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") triggerCrash();
+  });
 
-// ====== STAGE 2: Scratch-Off Schnee ======
-let ctx = null;
-let isScratching = false;
-let lastX = 0, lastY = 0;
+  // ---------- Schritt 2: Schnee wegwischen (Canvas Scratch) ----------
+  let ctx, isDown = false, clearedRatio = 0;
 
-function resizeCanvasToDisplaySize(canvas){
-  const rect = canvas.getBoundingClientRect();
-  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-  canvas.width = Math.floor(rect.width * dpr);
-  canvas.height = Math.floor(rect.height * dpr);
-  return dpr;
-}
+  function sizeCanvas() {
+    const rect = snowCanvas.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    snowCanvas.width  = Math.floor(rect.width * dpr);
+    snowCanvas.height = Math.floor(rect.height * dpr);
+    ctx = snowCanvas.getContext("2d");
+    ctx.scale(dpr, dpr);
 
-function drawSnowLayer(){
-  const w = scratch.width;
-  const h = scratch.height;
-  ctx.clearRect(0,0,w,h);
+    // Schnee “vollflächig”
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.fillRect(0, 0, rect.width, rect.height);
 
-  // Schneeschicht
-  ctx.fillStyle = "rgba(255,255,255,0.95)";
-  ctx.fillRect(0,0,w,h);
+    // leichte Struktur
+    for (let i=0; i<1400; i++){
+      const x = Math.random() * rect.width;
+      const y = Math.random() * rect.height;
+      const r = Math.random() * 2.3;
+      ctx.fillStyle = `rgba(240,248,255,${0.25 + Math.random()*0.25})`;
+      ctx.beginPath();
+      ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fill();
+    }
 
-  // “Flocken”
-  ctx.globalAlpha = 0.25;
-  for(let i=0;i<180;i++){
-    const x = Math.random()*w;
-    const y = Math.random()*h;
-    const r = 2 + Math.random()*6;
+    ctx.globalCompositeOperation = "destination-out";
+  }
+
+  function scratch(x, y) {
+    const rect = snowCanvas.getBoundingClientRect();
+    const cx = x - rect.left;
+    const cy = y - rect.top;
+
     ctx.beginPath();
-    ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fillStyle = "rgba(220,240,255,1)";
+    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.globalAlpha = 1;
 
-  // Text-Hinweis
-  ctx.fillStyle = "rgba(20,40,70,0.55)";
-  ctx.font = `${Math.floor(w/28)}px system-ui`;
-  ctx.textAlign = "center";
-  ctx.fillText("WISCH DEN SCHNEE WEG", w/2, h/2);
-}
+  function estimateCleared() {
+    // grob: wir lesen selten Pixel aus (Performance)
+    const rect = snowCanvas.getBoundingClientRect();
+    const sample = ctx.getImageData(0, 0, Math.min(220, rect.width), Math.min(160, rect.height)).data;
+    let transparent = 0;
+    for (let i = 3; i < sample.length; i += 4) {
+      if (sample[i] < 10) transparent++;
+    }
+    clearedRatio = transparent / (sample.length / 4);
+    return clearedRatio;
+  }
 
-function scratchAt(x,y, radius){
-  ctx.save();
-  ctx.globalCompositeOperation = "destination-out";
-  ctx.beginPath();
-  ctx.arc(x,y,radius,0,Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-}
+  function onPointerDown(e) {
+    isDown = true;
+    const p = getPoint(e);
+    scratch(p.x, p.y);
+  }
 
-function getScratchPercentCleared(){
-  // Grobe Messung: wir sampeln Pixel, um Performance zu halten
-  const w = scratch.width, h = scratch.height;
-  const img = ctx.getImageData(0,0,w,h).data;
-  const step = 16; // sampling step
-  let total = 0, cleared = 0;
+  function onPointerMove(e) {
+    if (!isDown) return;
+    e.preventDefault();
+    const p = getPoint(e);
+    scratch(p.x, p.y);
 
-  for(let y=0; y<h; y+=step){
-    for(let x=0; x<w; x+=step){
-      const idx = (y*w + x)*4 + 3; // alpha
-      const a = img[idx];
-      total++;
-      if(a < 20) cleared++;
+    // Check ob genug frei
+    if (Math.random() < 0.08) {
+      const r = estimateCleared();
+      if (r > 0.32) finishSnow();
     }
   }
-  return cleared / total;
-}
 
-function pointerPos(ev){
-  const rect = scratch.getBoundingClientRect();
-  const dpr = scratch.width / rect.width;
-  const x = (ev.clientX - rect.left) * dpr;
-  const y = (ev.clientY - rect.top) * dpr;
-  return {x,y};
-}
-
-function initScratch(){
-  // Button reset
-  toStage3.disabled = true;
-  toStage3.classList.add("btn--disabled");
-
-  ctx = scratch.getContext("2d", { willReadFrequently: true });
-  resizeCanvasToDisplaySize(scratch);
-  drawSnowLayer();
-
-  const radiusBase = Math.max(26, scratch.width * 0.03);
-
-  function start(ev){
-    tryUnlockAudio();
-    isScratching = true;
-    const p = pointerPos(ev);
-    lastX = p.x; lastY = p.y;
-    scratchAt(p.x,p.y, radiusBase);
+  function onPointerUp() {
+    isDown = false;
+    const r = estimateCleared();
+    if (r > 0.32) finishSnow();
   }
-  function move(ev){
-    if(!isScratching) return;
-    const p = pointerPos(ev);
 
-    // Linie aus “Kreisen”, damit es weich wirkt
-    const dx = p.x - lastX;
-    const dy = p.y - lastY;
-    const dist = Math.hypot(dx,dy);
-    const steps = Math.max(1, Math.floor(dist / 8));
-
-    for(let i=0;i<steps;i++){
-      const t = i/steps;
-      scratchAt(lastX + dx*t, lastY + dy*t, radiusBase);
-    }
-
-    lastX = p.x; lastY = p.y;
-
-    // Check Fortschritt
-    const cleared = getScratchPercentCleared();
-    if(cleared >= SCRATCH_CLEAR_THRESHOLD){
-      isScratching = false;
-      toStage3.disabled = false;
-      toStage3.classList.remove("btn--disabled");
-      playTinyJingle();
-      // Leichtes “Finish”-Fading
-      scratch.style.transition = "opacity 500ms ease";
-      scratch.style.opacity = "0.25";
-    }
+  function getPoint(e) {
+    if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
   }
-  function end(){ isScratching = false; }
 
-  scratch.onpointerdown = (ev)=>{ scratch.setPointerCapture(ev.pointerId); start(ev); };
-  scratch.onpointermove = move;
-  scratch.onpointerup = end;
-  scratch.onpointercancel = end;
+  let snowDone = false;
+  function finishSnow() {
+    if (snowDone) return;
+    snowDone = true;
 
-  window.addEventListener("resize", () => {
-    resizeCanvasToDisplaySize(scratch);
-    drawSnowLayer();
-  }, { passive:true });
-}
+    // Canvas "wegfaden"
+    snowCanvas.style.transition = "opacity .35s ease";
+    snowCanvas.style.opacity = "0";
 
-toStage3.addEventListener("click", () => {
-  tryUnlockAudio();
-  showStage(3);
-});
-
-// ====== STAGE 3: Geschenk öffnen ======
-steamCodeEl.textContent = STEAM_CODE;
-
-function revealCode(){
-  if(!codeCard.classList.contains("hidden")) return;
-  codeCard.classList.remove("hidden");
-  playTinyJingle();
-
-  // Geschenk-Deckel “auf”
-  const lid = gift.querySelector(".gift__lid");
-  lid.animate(
-    [{ transform: "rotate(0deg)" }, { transform: "rotate(-22deg) translateY(-6px)" }],
-    { duration: 380, easing: "cubic-bezier(.2,.9,.2,1)", fill: "forwards" }
-  );
-}
-
-function giftTap(){
-  tryUnlockAudio();
-  giftTaps++;
-  gift.animate(
-    [{ transform: "rotate(0deg) scale(1)" }, { transform: "rotate(2deg) scale(0.985)" }, { transform: "rotate(-2deg) scale(1)" }],
-    { duration: 220 }
-  );
-  if(giftTaps >= GIFT_TAPS_NEEDED){
-    revealCode();
+    setTimeout(() => {
+      showScene(sceneThanks);
+      // nach kurzem Tanz automatisch Button “glänzen”
+      toGiftBtn.focus();
+    }, 450);
   }
-}
 
-gift.addEventListener("pointerdown", giftTap, { passive:true });
+  function initSnowWipe() {
+    snowDone = false;
+    snowCanvas.style.opacity = "1";
+    sizeCanvas();
 
-// Device motion shake
-let lastShake = 0;
-if (window.DeviceMotionEvent) {
-  window.addEventListener("devicemotion", (e) => {
-    const acc = e.accelerationIncludingGravity;
-    if(!acc) return;
+    // Pointer Events
+    snowCanvas.addEventListener("mousedown", onPointerDown);
+    snowCanvas.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("mouseup", onPointerUp);
 
+    snowCanvas.addEventListener("touchstart", onPointerDown, { passive: false });
+    snowCanvas.addEventListener("touchmove", onPointerMove, { passive: false });
+    window.addEventListener("touchend", onPointerUp);
+
+    window.addEventListener("resize", () => {
+      if (sceneSnow.classList.contains("scene--active")) sizeCanvas();
+    }, { passive: true });
+  }
+
+  // ---------- Schritt 3: Weiter zum Geschenk ----------
+  toGiftBtn.addEventListener("click", () => showScene(sceneGift));
+
+  // ---------- Schritt 4: Geschenk öffnen (Shake oder Tap) ----------
+  let opened = false;
+
+  function openGift() {
+    if (opened) return;
+    opened = true;
+
+    giftBox.style.animation = "none";
+    giftBox.style.transform = "rotate(-2deg) translateY(6px) scale(1.03)";
+    setTimeout(() => {
+      reveal.classList.add("reveal--show");
+    }, 200);
+  }
+
+  giftBox.addEventListener("click", openGift);
+  giftBox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") openGift();
+  });
+
+  // Shake detection (Handy)
+  let lastShake = 0;
+  window.addEventListener("devicemotion", (event) => {
+    if (!sceneGift.classList.contains("scene--active")) return;
+    const a = event.accelerationIncludingGravity;
+    if (!a) return;
+    const mag = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
     const now = Date.now();
-    if(now - lastShake < 250) return;
-
-    const magnitude = Math.sqrt(
-      (acc.x || 0) * (acc.x || 0) +
-      (acc.y || 0) * (acc.y || 0) +
-      (acc.z || 0) * (acc.z || 0)
-    );
-
-    if(magnitude > SHAKE_THRESHOLD){
+    if (mag > 26 && now - lastShake > 700) {
       lastShake = now;
-      giftTap();
+      openGift();
     }
-  }, { passive:true });
-}
+  });
 
-// Copy
-copyBtn.addEventListener("click", async () => {
-  try{
-    await navigator.clipboard.writeText(steamCodeEl.textContent.trim());
-    copyMsg.textContent = "Kopiert! 🎉";
-    setTimeout(()=> copyMsg.textContent = "", 1600);
-  }catch(e){
-    // Fallback: markieren
-    const range = document.createRange();
-    range.selectNodeContents(steamCodeEl);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    copyMsg.textContent = "Konnte nicht automatisch kopieren – bitte manuell markieren & kopieren.";
-  }
-});
+  // Copy
+  copyBtn.addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(codeText.textContent.trim());
+      copyMsg.textContent = "Kopiert ✅";
+      setTimeout(() => copyMsg.textContent = "", 1400);
+    }catch{
+      copyMsg.textContent = "Kopieren ging nicht – markier den Code und kopier manuell.";
+      setTimeout(() => copyMsg.textContent = "", 2600);
+    }
+  });
 
-// Start
-showStage(1);
+  // Start: Intro ist aktiv
+  showScene(sceneIntro);
+})();
