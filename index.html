@@ -2,199 +2,150 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Frohe Weihnachten, Michelle ✨</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Michelles Weihnachtsgeschenk 🎄</title>
   <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
-  <div class="bg"></div>
+  <!-- Schneeflocken Hintergrund -->
   <div class="snow" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <header class="top">
-      <div class="badge">🎁</div>
-      <div>
-        <h1>Frohe Weihnachten,<br><span class="gold">Michelle</span> ✨</h1>
-        <p class="sub">Du Weihnachtswunder… Santa ist unterwegs — aber die Kühe sind außer Kontrolle. 🐮🎅</p>
-      </div>
-    </header>
+  <main class="app">
+    <!-- SCREEN 1: Intro -->
+    <section class="screen active" id="screen-intro">
+      <div class="card">
+        <h1>Ho ho ho! 🎅</h1>
+        <p class="bubble left">Pssst… ich hab da was für dich, Michelle. 😄</p>
+        <p class="bubble right">Aber du musst es dir erst verdienen!</p>
 
-    <!-- STAGE -->
-    <section class="stage card" aria-label="Spielbereich">
-      <!-- Speech bubble -->
-      <div class="bubble" id="bubble">
-        <div class="bubble-title" id="bubbleTitle">Santa:</div>
-        <div class="bubble-text" id="bubbleText">Michelle, bitte hilf mir! Tippe mich <b>3×</b> an, damit ich landen kann!</div>
-      </div>
+        <div class="scene">
+          <div class="tree" aria-hidden="true">
+            <div class="star"></div>
+            <div class="layer l1"></div>
+            <div class="layer l2"></div>
+            <div class="layer l3"></div>
+            <div class="trunk"></div>
 
-      <!-- Flying scene -->
-      <div class="sky" id="sky">
-        <button class="rig" id="rig" type="button" aria-label="Santa antippen">
-          <!-- Simple, clear SVG: Santa in sleigh pulled by cows (facing RIGHT) -->
-          <svg viewBox="0 0 980 320" class="rig-svg" role="img" aria-label="Santa im Schlitten, gezogen von Kühen">
-            <!-- rope -->
-            <path d="M430 190 C560 170, 610 150, 690 140" fill="none" stroke="rgba(255,230,150,.9)" stroke-width="6" stroke-linecap="round"/>
-            <path d="M430 210 C560 200, 610 185, 690 175" fill="none" stroke="rgba(255,230,150,.65)" stroke-width="6" stroke-linecap="round"/>
+            <!-- Kugeln -->
+            <div class="orn o1"></div>
+            <div class="orn o2"></div>
+            <div class="orn o3"></div>
+            <div class="orn o4"></div>
+            <div class="orn o5"></div>
+          </div>
 
-            <!-- Sleigh -->
-            <g id="sleigh" transform="translate(110,120)">
-              <path d="M40 120 C20 140, 30 165, 70 165 L230 165 C265 165, 285 150, 300 130" fill="none" stroke="#d9b35c" stroke-width="12" stroke-linecap="round"/>
-              <path d="M55 120 C40 150, 55 190, 120 190 L250 190" fill="none" stroke="#d9b35c" stroke-width="10" stroke-linecap="round"/>
-              <path d="M35 55 C35 20, 70 10, 115 12 L265 20 C305 22, 325 45, 315 75 L300 120 C290 150, 270 160, 235 160 L95 160 C60 160, 40 145, 36 112 Z"
-                    fill="#c51e2a" stroke="rgba(255,255,255,.25)" stroke-width="6" />
-              <circle cx="260" cy="55" r="10" fill="#ffd36a"/>
-              <circle cx="235" cy="43" r="7" fill="#ffd36a"/>
-              <circle cx="280" cy="78" r="7" fill="#ffd36a"/>
-            </g>
+          <div class="santa" aria-hidden="true">
+            <div class="hat"></div>
+            <div class="face"></div>
+            <div class="beard"></div>
+            <div class="body"></div>
+          </div>
 
-            <!-- Santa (clear hat, beard, belt) -->
-            <g id="santa" transform="translate(210,60)">
-              <!-- body -->
-              <path d="M120 175 C85 175, 70 150, 70 120 C70 85, 95 60, 130 60 C165 60, 190 85, 190 120 C190 150, 175 175, 140 175 Z"
-                    fill="#d8343a"/>
-              <!-- trim -->
-              <path d="M75 125 C95 150, 165 150, 185 125" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
-              <!-- belt -->
-              <rect x="82" y="120" width="96" height="18" rx="9" fill="#1c1c1c"/>
-              <rect x="122" y="116" width="30" height="26" rx="6" fill="#d9b35c"/>
-              <rect x="130" y="122" width="14" height="14" rx="3" fill="#1c1c1c"/>
-              <!-- head -->
-              <circle cx="130" cy="45" r="34" fill="#ffd6b8"/>
-              <!-- beard -->
-              <path d="M96 55 C95 88, 108 105, 130 105 C152 105, 165 88, 164 55
-                       C176 70, 182 92, 175 115
-                       C170 140, 150 154, 130 154
-                       C110 154, 90 140, 85 115
-                       C78 92, 84 70, 96 55 Z"
-                    fill="#ffffff"/>
-              <!-- moustache -->
-              <path d="M110 70 C118 62, 124 60, 130 60 C136 60, 142 62, 150 70"
-                    fill="none" stroke="#f2f2f2" stroke-width="12" stroke-linecap="round"/>
-              <!-- glasses -->
-              <circle cx="118" cy="45" r="10" fill="none" stroke="rgba(30,30,30,.55)" stroke-width="4"/>
-              <circle cx="142" cy="45" r="10" fill="none" stroke="rgba(30,30,30,.55)" stroke-width="4"/>
-              <path d="M128 45 L132 45" stroke="rgba(30,30,30,.55)" stroke-width="4" />
-              <!-- hat -->
-              <path d="M100 35 C110 12, 160 10, 166 34 C160 40, 104 42, 100 35 Z" fill="#d8343a"/>
-              <path d="M95 38 C108 48, 158 48, 170 38" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
-              <circle cx="176" cy="28" r="10" fill="#fff"/>
-              <!-- arm wave -->
-              <path d="M175 95 C205 78, 225 90, 232 110" fill="none" stroke="#d8343a" stroke-width="18" stroke-linecap="round"/>
-              <circle cx="236" cy="115" r="10" fill="#ffd6b8"/>
-            </g>
-
-            <!-- Cows team (facing RIGHT) -->
-            <g id="cows" transform="translate(620,95)">
-              <!-- cow 1 -->
-              <g transform="translate(0,55)">
-                <ellipse cx="90" cy="70" rx="80" ry="48" fill="#fff"/>
-                <path d="M45 60 C65 40, 110 40, 130 60 C120 92, 60 92, 45 60 Z" fill="#b86b3a" opacity=".95"/>
-                <circle cx="150" cy="62" r="30" fill="#fff"/>
-                <ellipse cx="162" cy="70" rx="22" ry="16" fill="#ffb7b7"/>
-                <circle cx="145" cy="58" r="4" fill="#222"/>
-                <circle cx="164" cy="58" r="4" fill="#222"/>
-                <path d="M140 45 L158 38" stroke="#b86b3a" stroke-width="10" stroke-linecap="round"/>
-                <path d="M155 45 L176 38" stroke="#b86b3a" stroke-width="10" stroke-linecap="round"/>
-                <path d="M147 35 C150 18, 160 18, 165 35" fill="none" stroke="#d9b35c" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="166" cy="35" r="5" fill="#d9b35c"/>
-                <!-- legs -->
-                <path d="M55 108 L55 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M95 108 L95 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M120 108 L120 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M75 108 L75 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-              </g>
-
-              <!-- cow 2 -->
-              <g transform="translate(160,0)">
-                <ellipse cx="90" cy="70" rx="80" ry="48" fill="#fff"/>
-                <path d="M55 55 C75 35, 120 35, 140 55 C125 90, 70 95, 55 55 Z" fill="#2b2b2b" opacity=".9"/>
-                <circle cx="150" cy="62" r="30" fill="#fff"/>
-                <ellipse cx="162" cy="70" rx="22" ry="16" fill="#ffb7b7"/>
-                <circle cx="145" cy="58" r="4" fill="#222"/>
-                <circle cx="164" cy="58" r="4" fill="#222"/>
-                <path d="M140 45 L158 38" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
-                <path d="M155 45 L176 38" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
-                <path d="M147 35 C150 18, 160 18, 165 35" fill="none" stroke="#d9b35c" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="166" cy="35" r="5" fill="#d9b35c"/>
-                <path d="M55 108 L55 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M95 108 L95 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M120 108 L120 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-                <path d="M75 108 L75 138" stroke="#cfcfcf" stroke-width="10" stroke-linecap="round"/>
-              </g>
-            </g>
-          </svg>
-        </button>
-
-        <div class="hint" id="hint">Tipp: Du musst Santa <b>3×</b> treffen. Keine Zeitbegrenzung. 👆</div>
-      </div>
-
-      <!-- Snow wipe overlay (fullscreen within stage) -->
-      <div class="wipe" id="wipe" hidden>
-        <div class="wipe-title">Oh nein! Santa ist im Schnee gelandet…</div>
-        <div class="wipe-sub">Wisch den Schnee weg, um ihn zu retten! ❄️</div>
-        <canvas id="wipeCanvas" class="wipe-canvas"></canvas>
-        <button class="btn ghost" id="wipeSkip" type="button">Wenn’s hakt: Neu zeichnen</button>
-      </div>
-
-      <!-- After rescue -->
-      <div class="rescue" id="rescue" hidden>
-        <div class="bubble bubble-center">
-          <div class="bubble-title">Santa:</div>
-          <div class="bubble-text">DANKE, MICHELLE! Du hast Weihnachten gerettet! 💙<br>Kurzer Freuden-Tanz…</div>
-        </div>
-        <div class="dance" aria-hidden="true">
-          <div class="dance-santa">🎅</div>
-          <div class="dance-cow">🐮</div>
-          <div class="dance-sleigh">🛷</div>
+          <div class="gift" aria-hidden="true">
+            <div class="ribbon"></div>
+          </div>
         </div>
 
-        <button class="btn" id="toGift" type="button">Weiter zum Geschenk 🎁</button>
-      </div>
-
-      <!-- Gift step -->
-      <div class="gift" id="gift" hidden>
-        <div class="bubble bubble-center">
-          <div class="bubble-title">Santa:</div>
-          <div class="bubble-text">Jetzt schüttel oder tipp das Geschenk, um es zu öffnen! 🎁</div>
-        </div>
-
-        <div class="giftbox" id="giftbox" role="button" tabindex="0" aria-label="Geschenk öffnen">
-          <div class="gift-lid"></div>
-          <div class="gift-body"></div>
-          <div class="gift-ribbon"></div>
-        </div>
-
-        <button class="btn" id="openGift" type="button">Geschenk schütteln / öffnen</button>
-        <div class="tiny">Am Handy geht’s auch mit Bewegung — oder einfach tippen.</div>
+        <button class="btn" id="btn-start">Los geht’s ✨</button>
+        <p class="hint">Mini-Spiel: <b>Schnee wegwischen</b> → <b>Kugeln finden</b> → <b>Code enthüllen</b></p>
       </div>
     </section>
 
-    <footer class="foot">PS: Wenn du lachst, war’s Absicht. 😄</footer>
+    <!-- SCREEN 2: Snow wipe -->
+    <section class="screen" id="screen-wipe">
+      <div class="card">
+        <h2>1/3: Wisch den Schnee weg! ❄️</h2>
+        <p class="bubble left">Wisch mit dem Finger über den Schnee, bis genug frei ist.</p>
+
+        <div class="wipeWrap">
+          <div class="underScene" aria-hidden="true">
+            <div class="tree big">
+              <div class="star"></div>
+              <div class="layer l1"></div>
+              <div class="layer l2"></div>
+              <div class="layer l3"></div>
+              <div class="trunk"></div>
+              <div class="orn o1"></div><div class="orn o2"></div><div class="orn o3"></div><div class="orn o4"></div><div class="orn o5"></div>
+            </div>
+            <div class="gift big"><div class="ribbon"></div></div>
+            <div class="santa big"><div class="hat"></div><div class="face"></div><div class="beard"></div><div class="body"></div></div>
+            <div class="ground"></div>
+          </div>
+
+          <!-- Wischfläche (Canvas) -->
+          <canvas id="wipeCanvas"></canvas>
+
+          <div class="progress">
+            <div class="bar"><div class="barFill" id="wipeBar"></div></div>
+            <div class="pct" id="wipePct">0%</div>
+          </div>
+        </div>
+
+        <button class="btn" id="btn-to-balls" disabled>Weiter 🎄</button>
+        <p class="hint">Tipp: Große Kreise wischen geht schneller.</p>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: Ornament game -->
+    <section class="screen" id="screen-balls">
+      <div class="card">
+        <h2>2/3: Finde die Kugeln! 🔴🟡</h2>
+        <p class="bubble right">Tippe <b>5 Kugeln</b> am Baum an. Jede Kugel macht „pling“ 😄</p>
+
+        <div class="tapScene">
+          <div class="tree tap" id="tapTree" aria-label="Tannenbaum zum Antippen">
+            <div class="star"></div>
+            <div class="layer l1"></div>
+            <div class="layer l2"></div>
+            <div class="layer l3"></div>
+            <div class="trunk"></div>
+
+            <button class="ornBtn o1" data-orn="1" aria-label="Kugel 1"></button>
+            <button class="ornBtn o2" data-orn="2" aria-label="Kugel 2"></button>
+            <button class="ornBtn o3" data-orn="3" aria-label="Kugel 3"></button>
+            <button class="ornBtn o4" data-orn="4" aria-label="Kugel 4"></button>
+            <button class="ornBtn o5" data-orn="5" aria-label="Kugel 5"></button>
+          </div>
+
+          <div class="score">
+            Gefunden: <span id="foundCount">0</span>/5
+          </div>
+        </div>
+
+        <button class="btn" id="btn-reveal" disabled>Code enthüllen 🎁</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: Reveal -->
+    <section class="screen" id="screen-reveal">
+      <div class="card">
+        <h2>3/3: Dein Geschenk 🎁</h2>
+        <p class="bubble left">Okay okay… du hast gewonnen. 😅</p>
+        <p class="bubble right">Hier ist dein Gutscheincode:</p>
+
+        <div class="codeBox" id="codeBox">
+          <div class="codeLabel">Gutscheincode</div>
+          <div class="code" id="giftCode">•••• •••• ••••</div>
+          <button class="btn small" id="btn-copy">Kopieren 📋</button>
+          <div class="copied" id="copiedMsg">Kopiert! ✅</div>
+        </div>
+
+        <div class="finalScene">
+          <div class="tree big">
+            <div class="star"></div>
+            <div class="layer l1"></div><div class="layer l2"></div><div class="layer l3"></div>
+            <div class="trunk"></div>
+            <div class="orn o1"></div><div class="orn o2"></div><div class="orn o3"></div><div class="orn o4"></div><div class="orn o5"></div>
+          </div>
+          <div class="gift big"><div class="ribbon"></div></div>
+          <div class="santa big"><div class="hat"></div><div class="face"></div><div class="beard"></div><div class="body"></div></div>
+        </div>
+
+        <p class="hint">Frohe Weihnachten ❤️</p>
+      </div>
+    </section>
   </main>
 
-  <!-- CODE MODAL -->
-  <div class="modal" id="modal" hidden>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
-      <p class="modal-text">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
-
-      <div class="codebox">
-        <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
-        <button class="btn small" id="copyBtn" type="button">Kopieren</button>
-      </div>
-
-      <p class="tiny">Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.</p>
-
-      <div class="bubble bubble-center" style="margin-top:14px">
-        <div class="bubble-title">Santa:</div>
-        <div class="bubble-text">Jan wünscht dir frohe Weihnachten und einen schönen Abend. ❤️</div>
-      </div>
-
-      <button class="btn ghost" id="closeBtn" type="button">Schließen</button>
-    </div>
-  </div>
-
-  <!-- NUR DIESE JS DATEI -->
   <script src="main.js?v=4"></script>
 </body>
-                </html>
+</html>
