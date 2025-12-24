@@ -1,216 +1,228 @@
 (() => {
   const $ = (s) => document.querySelector(s);
 
-  const sceneIntro  = $("#sceneIntro");
-  const sceneSnow   = $("#sceneSnow");
-  const sceneThanks = $("#sceneThanks");
-  const sceneGift   = $("#sceneGift");
+  const flightScene = $("#flightScene");
+  const snowScene   = $("#snowScene");
+  const giftScene   = $("#giftScene");
 
-  const santaCow = $("#santaCow");
-  const toGiftBtn = $("#toGift");
+  const santaBtn = $("#santa");
+  const tapFill  = $("#tapFill");
+  const tapText  = $("#tapText");
+  const skipBtn  = $("#skipBtn");
 
-  const snowCanvas = $("#snowCanvas");
-  const reveal = $("#reveal");
-  const giftBox = $("#giftBox");
+  const scratch  = $("#scratch");
+
+  const modal    = $("#modal");
+  const openGift = $("#openGiftBtn");
+  const closeBtn = $("#closeBtn");
+  const copyBtn  = $("#copyBtn");
   const codeText = $("#codeText");
-  const copyBtn = $("#copyBtn");
-  const copyMsg = $("#copyMsg");
 
-  // ✅ HIER später deinen echten Code einfügen (du ersetzt nur den Text im HTML oder hier)
-  // Wenn du es lieber nur im HTML ersetzt: so lassen.
-  // codeText.textContent = "STEAM-CODE-HIER-EINFÜGEN";
+  const snowLayer = $("#snowLayer");
 
-  function showScene(target) {
-    [sceneIntro, sceneSnow, sceneThanks, sceneGift].forEach(s => s.classList.remove("scene--active"));
-    target.classList.add("scene--active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  // ---- Schneeflocken im Hintergrund ----
+  function spawnSnow() {
+    const flake = document.createElement("div");
+    flake.className = "snow";
+    const size = 4 + Math.random() * 8;
+    flake.style.width = `${size}px`;
+    flake.style.height = `${size}px`;
+    flake.style.left = `${Math.random() * 100}vw`;
+    flake.style.opacity = `${0.35 + Math.random() * 0.6}`;
+    flake.style.animationDuration = `${4 + Math.random() * 5}s`;
+    flake.style.animationDelay = `${Math.random() * 1.5}s`;
+    snowLayer.appendChild(flake);
+    setTimeout(() => flake.remove(), 11000);
+  }
+  setInterval(spawnSnow, 140);
+
+  // ---- Step 1: Tap Santa (3x) bevor er abhaut ----
+  let taps = 0;
+  const needTaps = 3;
+  let wonTapGame = false;
+
+  function updateTapUI() {
+    tapFill.style.width = `${(taps / needTaps) * 100}%`;
+    tapText.textContent = `${taps} / ${needTaps}`;
+  }
+  updateTapUI();
+
+  function winTapGame() {
+    wonTapGame = true;
+    // Crash in Schnee
+    toSnowScene();
   }
 
-  // ---------- Schritt 1: Antippen -> Crash ----------
-  function triggerCrash() {
-    // Stoppt nicht die Loop-Animation, aber wir “crashen” visuell weg
-    santaCow.classList.add("crash");
-    santaCow.setAttribute("aria-disabled", "true");
+  function onTapSanta() {
+    if (wonTapGame) return;
+    taps = Math.min(needTaps, taps + 1);
+    updateTapUI();
 
-    // nach Crash zur Schnee-Szene
-    setTimeout(() => {
-      showScene(sceneSnow);
-      initSnowWipe();
-    }, 820);
+    // kleines Feedback
+    santaBtn.style.filter = "drop-shadow(0 0 14px rgba(255,211,106,.55))";
+    setTimeout(() => (santaBtn.style.filter = ""), 180);
+
+    if (taps >= needTaps) winTapGame();
   }
 
-  // Click + Keyboard (Enter/Space) robust
-  santaCow.addEventListener("click", triggerCrash);
-  santaCow.addEventListener("touchstart", triggerCrash, { passive: true });
-  santaCow.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") triggerCrash();
+  santaBtn.addEventListener("click", onTapSanta);
+  santaBtn.addEventListener("touchstart", (e) => { e.preventDefault(); onTapSanta(); }, { passive:false });
+  santaBtn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") onTapSanta();
   });
 
-  // ---------- Schritt 2: Schnee wegwischen (Canvas Scratch) ----------
-  let ctx, isDown = false, clearedRatio = 0;
+  skipBtn.addEventListener("click", toSnowScene);
 
-  function sizeCanvas() {
-    const rect = snowCanvas.getBoundingClientRect();
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    snowCanvas.width  = Math.floor(rect.width * dpr);
-    snowCanvas.height = Math.floor(rect.height * dpr);
-    ctx = snowCanvas.getContext("2d");
-    ctx.scale(dpr, dpr);
+  // Wenn Spieler Santa nicht schafft: nach 7s automatisch Crash (damit’s weitergeht)
+  setTimeout(() => { if (!wonTapGame) toSnowScene(); }, 7200);
 
-    // Schnee “vollflächig”
+  // ---- Step 2: Schnee wegwischen (Scratch) ----
+  let ctx, w, h;
+  let scratchDone = false;
+
+  function setupScratch() {
+    w = scratch.clientWidth;
+    h = scratch.clientHeight;
+    scratch.width = Math.floor(w * devicePixelRatio);
+    scratch.height = Math.floor(h * devicePixelRatio);
+
+    ctx = scratch.getContext("2d");
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    // “Schnee” Fläche
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.fillRect(0, 0, w, h);
 
-    // leichte Struktur
-    for (let i=0; i<1400; i++){
-      const x = Math.random() * rect.width;
-      const y = Math.random() * rect.height;
-      const r = Math.random() * 2.3;
-      ctx.fillStyle = `rgba(240,248,255,${0.25 + Math.random()*0.25})`;
+    // etwas “Flocken” Struktur
+    for (let i = 0; i < 140; i++) {
       ctx.beginPath();
-      ctx.arc(x,y,r,0,Math.PI*2);
+      const r = 1 + Math.random() * 3;
+      ctx.fillStyle = `rgba(255,255,255,${0.35 + Math.random() * 0.35})`;
+      ctx.arc(Math.random() * w, Math.random() * h, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
     ctx.globalCompositeOperation = "destination-out";
   }
 
-  function scratch(x, y) {
-    const rect = snowCanvas.getBoundingClientRect();
-    const cx = x - rect.left;
-    const cy = y - rect.top;
-
+  function scratchAt(x, y) {
+    if (scratchDone) return;
     ctx.beginPath();
-    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+    ctx.arc(x, y, 26, 0, Math.PI * 2);
     ctx.fill();
+    checkScratchProgress();
   }
 
-  function estimateCleared() {
-    // grob: wir lesen selten Pixel aus (Performance)
-    const rect = snowCanvas.getBoundingClientRect();
-    const sample = ctx.getImageData(0, 0, Math.min(220, rect.width), Math.min(160, rect.height)).data;
-    let transparent = 0;
-    for (let i = 3; i < sample.length; i += 4) {
-      if (sample[i] < 10) transparent++;
+  function getXY(ev) {
+    const r = scratch.getBoundingClientRect();
+    const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+    const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+    return { x: clientX - r.left, y: clientY - r.top };
+  }
+
+  let isDown = false;
+  scratch.addEventListener("mousedown", (e) => { isDown = true; const p=getXY(e); scratchAt(p.x,p.y); });
+  window.addEventListener("mouseup", () => { isDown = false; });
+  scratch.addEventListener("mousemove", (e) => { if (!isDown) return; const p=getXY(e); scratchAt(p.x,p.y); });
+
+  scratch.addEventListener("touchstart", (e) => { e.preventDefault(); isDown = true; const p=getXY(e); scratchAt(p.x,p.y); }, { passive:false });
+  scratch.addEventListener("touchmove", (e) => { e.preventDefault(); if(!isDown) return; const p=getXY(e); scratchAt(p.x,p.y); }, { passive:false });
+  scratch.addEventListener("touchend", () => { isDown = false; });
+
+  function checkScratchProgress() {
+    // grob: wir prüfen wenige Samples, nicht jedes Pixel (schnell auf Handy)
+    const samples = 120;
+    let cleared = 0;
+
+    // Wir lesen Mini-Punkte (getImageData) in sample-Koordinaten
+    for (let i = 0; i < samples; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      const d = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
+      // alpha = d[3]; bei destination-out: je “weggeschrubbt”, desto niedriger
+      if (d[3] < 40) cleared++;
     }
-    clearedRatio = transparent / (sample.length / 4);
-    return clearedRatio;
-  }
 
-  function onPointerDown(e) {
-    isDown = true;
-    const p = getPoint(e);
-    scratch(p.x, p.y);
-  }
-
-  function onPointerMove(e) {
-    if (!isDown) return;
-    e.preventDefault();
-    const p = getPoint(e);
-    scratch(p.x, p.y);
-
-    // Check ob genug frei
-    if (Math.random() < 0.08) {
-      const r = estimateCleared();
-      if (r > 0.32) finishSnow();
+    const ratio = cleared / samples;
+    if (ratio > 0.55) {
+      scratchDone = true;
+      // Canvas weg, Santa bedankt sich + Tanz, dann Geschenk
+      scratch.style.transition = "opacity .45s ease";
+      scratch.style.opacity = "0";
+      setTimeout(() => {
+        scratch.style.display = "none";
+        toGiftScene();
+      }, 520);
     }
   }
 
-  function onPointerUp() {
-    isDown = false;
-    const r = estimateCleared();
-    if (r > 0.32) finishSnow();
-  }
+  // ---- Scene transitions ----
+  function toSnowScene() {
+    flightScene.classList.add("hidden");
+    snowScene.classList.remove("hidden");
+    giftScene.classList.add("hidden");
 
-  function getPoint(e) {
-    if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-  }
+    // Reset scratch state
+    scratchDone = false;
+    scratch.style.display = "block";
+    scratch.style.opacity = "1";
 
-  let snowDone = false;
-  function finishSnow() {
-    if (snowDone) return;
-    snowDone = true;
-
-    // Canvas "wegfaden"
-    snowCanvas.style.transition = "opacity .35s ease";
-    snowCanvas.style.opacity = "0";
-
+    // klein warten bis layout steht
     setTimeout(() => {
-      showScene(sceneThanks);
-      // nach kurzem Tanz automatisch Button “glänzen”
-      toGiftBtn.focus();
-    }, 450);
+      setupScratch();
+    }, 60);
   }
 
-  function initSnowWipe() {
-    snowDone = false;
-    snowCanvas.style.opacity = "1";
-    sizeCanvas();
+  function toGiftScene() {
+    snowScene.classList.add("hidden");
+    giftScene.classList.remove("hidden");
 
-    // Pointer Events
-    snowCanvas.addEventListener("mousedown", onPointerDown);
-    snowCanvas.addEventListener("mousemove", onPointerMove);
-    window.addEventListener("mouseup", onPointerUp);
-
-    snowCanvas.addEventListener("touchstart", onPointerDown, { passive: false });
-    snowCanvas.addEventListener("touchmove", onPointerMove, { passive: false });
-    window.addEventListener("touchend", onPointerUp);
-
-    window.addEventListener("resize", () => {
-      if (sceneSnow.classList.contains("scene--active")) sizeCanvas();
-    }, { passive: true });
+    // kurzer “Danke”-Moment (Santa tanzt sowieso per CSS)
+    // Danach darf man Geschenk öffnen
   }
 
-  // ---------- Schritt 3: Weiter zum Geschenk ----------
-  toGiftBtn.addEventListener("click", () => showScene(sceneGift));
-
-  // ---------- Schritt 4: Geschenk öffnen (Shake oder Tap) ----------
-  let opened = false;
-
-  function openGift() {
-    if (opened) return;
-    opened = true;
-
-    giftBox.style.animation = "none";
-    giftBox.style.transform = "rotate(-2deg) translateY(6px) scale(1.03)";
-    setTimeout(() => {
-      reveal.classList.add("reveal--show");
-    }, 200);
+  // ---- Modal (Code) ----
+  function openModal() {
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+  }
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
   }
 
-  giftBox.addEventListener("click", openGift);
-  giftBox.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") openGift();
+  openGift.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
   });
 
-  // Shake detection (Handy)
-  let lastShake = 0;
-  window.addEventListener("devicemotion", (event) => {
-    if (!sceneGift.classList.contains("scene--active")) return;
-    const a = event.accelerationIncludingGravity;
-    if (!a) return;
-    const mag = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
-    const now = Date.now();
-    if (mag > 26 && now - lastShake > 700) {
-      lastShake = now;
-      openGift();
-    }
-  });
-
-  // Copy
   copyBtn.addEventListener("click", async () => {
-    try{
-      await navigator.clipboard.writeText(codeText.textContent.trim());
-      copyMsg.textContent = "Kopiert ✅";
-      setTimeout(() => copyMsg.textContent = "", 1400);
-    }catch{
-      copyMsg.textContent = "Kopieren ging nicht – markier den Code und kopier manuell.";
-      setTimeout(() => copyMsg.textContent = "", 2600);
+    const text = codeText.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = "Kopiert ✅";
+      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
+    } catch {
+      // Fallback: markieren
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(codeText);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      copyBtn.textContent = "Markiert 👆";
+      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
     }
   });
 
-  // Start: Intro ist aktiv
-  showScene(sceneIntro);
+  // Safety: Modal niemals automatisch öffnen
+  closeModal();
+
+  // Wenn Bildschirm dreht: Scratch neu aufsetzen
+  window.addEventListener("resize", () => {
+    if (!snowScene.classList.contains("hidden") && scratch.style.display !== "none") {
+      setupScratch();
+    }
+  });
 })();
