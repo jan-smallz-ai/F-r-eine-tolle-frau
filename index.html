@@ -2,136 +2,142 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Michelles Geschenk 🎄</title>
-  <link rel="stylesheet" href="base.css" />
-  <meta name="theme-color" content="#0b1020" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">🎅</div>
-        <div class="title">
-          <div class="kicker">Geschenk 4</div>
-          <div class="headline">Michelles Weihnachts-Mission</div>
-        </div>
+  <div id="app" class="app">
+    <div class="stage" id="stage">
+
+      <!-- HUD (dezentes Feedback, keine Prozent-Story im Bild) -->
+      <div class="hud" aria-hidden="true">
+        <div id="hint" class="hint"></div>
       </div>
-      <div class="hud">
-        <div id="stageTag" class="tag">Start</div>
-      </div>
-    </header>
 
-    <main class="stage">
-      <!-- SCENE (SVG world) -->
-      <section id="world" class="world" aria-label="Szene">
-        <div class="sky"></div>
+      <!-- Szene 1: Schlitten -->
+      <section id="scene-sled" class="scene is-active" aria-label="Schlitten-Szene">
+        <div class="scene-inner">
+          <div class="sky-snow" aria-hidden="true"></div>
 
-        <div id="snowLayer" class="snow-layer" aria-hidden="true"></div>
-
-        <div id="sleighArea" class="sleigh-area" role="button" tabindex="0" aria-label="Schlitten antippen">
-          <!-- SVG is injected by JS (scene_art.js) -->
-        </div>
-
-        <div id="crashPoof" class="poof" aria-hidden="true">☁️💥☁️</div>
-      </section>
-
-      <!-- SPEECH BUBBLE -->
-      <section class="dialog">
-        <div class="bubble">
-          <div class="bubble-tail"></div>
-          <div class="bubble-header">
-            <span class="speaker">Weihnachtsmann</span>
-            <span id="mood" class="mood">😰</span>
-          </div>
-          <div id="speechText" class="bubble-text"></div>
-          <div class="bubble-actions">
-            <button id="btnNext" class="btn primary" type="button">Weiter</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- FULLSCREEN WHITEOUT + SCRATCH -->
-      <section id="wipeScreen" class="wipe-screen hidden" aria-label="Schnee wegwischen">
-        <div class="wipe-top">
-          <div class="wipe-title">❄️ Schnee wegwischen!</div>
-          <div class="wipe-sub">
-            Wische den Schnee <b>komplett</b> weg (100%), damit der Weihnachtsmann wieder auftaucht.
-          </div>
-
-          <div class="wipe-meter">
-            <div class="meter-bar">
-              <div id="meterFill" class="meter-fill" style="width:0%"></div>
-            </div>
-            <div id="meterText" class="meter-text">0%</div>
-          </div>
-        </div>
-
-        <div class="wipe-canvas-wrap">
-          <canvas id="wipeCanvas"></canvas>
-          <div class="wipe-hint">🖐️ Wischen / mit Maus ziehen</div>
-        </div>
-
-        <div class="wipe-bottom">
-          <button id="btnWipeSkip" class="btn ghost" type="button" title="Nur im Notfall">
-            Notfall-Skip
-          </button>
-        </div>
-      </section>
-
-      <!-- FINAL GIFT -->
-      <section id="finalScreen" class="final hidden" aria-label="Finale">
-        <div class="final-card">
-          <div class="final-left">
-            <div id="finalTree" class="tree-wrap"></div>
-          </div>
-
-          <div class="final-right">
-            <div class="final-head">
-              <div class="final-title">🎄 Du hast Weihnachten gerettet!</div>
-              <div class="final-sub" id="finalLine"></div>
+          <div class="art-wrap">
+            <div id="sled-art" class="art" role="img" aria-label="Weihnachtsmann im Schlitten, Kühe ziehen den Schlitten">
+              <!-- SVG kommt aus JS (art_svg.js) -->
             </div>
 
-            <div class="gift-box">
-              <div class="gift-top">
-                <div class="gift-tag">Für Michelle</div>
-                <div class="gift-ribbon"></div>
+            <div id="speech" class="speech" role="dialog" aria-live="polite">
+              <div class="speech-bubble">
+                <div class="speech-title">🎅 Weihnachtsmann</div>
+                <div id="speech-text" class="speech-text">
+                  Hilfe! Meine Kühe sind außer Kontrolle!
+                </div>
               </div>
+              <div class="speech-tail" aria-hidden="true"></div>
+            </div>
+          </div>
 
-              <div class="gift-body">
-                <div class="gift-label">Steam-Code</div>
+          <div class="cta">
+            <div class="cta-title">Tippe 3× auf die Kühe oder den Schlitten</div>
+            <div class="cta-sub">…um sie zu beruhigen, bevor alles im Schnee endet.</div>
+            <button id="tap-target-btn" class="btn ghost" type="button">
+              Oder hier tippen (falls Mobile zickt)
+            </button>
+          </div>
+        </div>
+      </section>
 
-                <div class="code-wrap">
-                  <div id="codeBlur" class="code-blur" aria-label="Code verborgen">
-                    XXXX-XXXX-XXXX
-                  </div>
-                  <div class="code-note">
-                    (Setze deinen echten Code in <code>core.js</code> in <b>STEAM_CODE</b> ein.)
+      <!-- Szene 2: Schnee wegwischen (100%) -->
+      <section id="scene-snow" class="scene" aria-label="Schnee-Szene">
+        <div class="scene-inner">
+          <div class="snow-screen">
+            <div class="snow-instructions">
+              <div class="snow-title">❄️ Alles ist eingeschneit!</div>
+              <div class="snow-sub">
+                Wisch den Schnee komplett weg – <b>wirklich 100%</b> – dann geht’s weiter.
+              </div>
+            </div>
+
+            <div class="snow-canvas-wrap">
+              <canvas id="scratch" width="900" height="600" aria-label="Schnee wegwischen"></canvas>
+              <div id="under-snow" class="under-snow" aria-hidden="true"></div>
+            </div>
+
+            <div class="snow-footer">
+              <button id="reset-snow" class="btn ghost" type="button">Neu anfangen</button>
+              <div id="snow-status" class="snow-status" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Szene 3: Finale Geschenk -->
+      <section id="scene-finale" class="scene" aria-label="Finale">
+        <div class="scene-inner">
+          <div class="finale-bg" aria-hidden="true"></div>
+
+          <div class="finale-grid">
+            <div class="finale-left">
+              <div id="finale-santa" class="finale-santa" aria-hidden="true"></div>
+
+              <div id="finale-speech" class="speech finale-speech" role="dialog" aria-live="polite">
+                <div class="speech-bubble">
+                  <div class="speech-title">🎅 Weihnachtsmann</div>
+                  <div id="finale-text" class="speech-text">
+                    Oh, danke Michelle — du hast Weihnachten gerettet!
                   </div>
                 </div>
+                <div class="speech-tail" aria-hidden="true"></div>
+              </div>
 
-                <button id="btnReveal" class="btn primary big" type="button">🎁 Geschenk öffnen</button>
-                <button id="btnReplay" class="btn ghost" type="button">Nochmal anschauen</button>
+              <div class="dance-note" id="dance-note">
+                (Ich tanze kurz vor Freude…)
               </div>
             </div>
 
-            <div id="confetti" class="confetti" aria-hidden="true"></div>
+            <div class="finale-right">
+              <div id="tree-art" class="tree-art" role="img" aria-label="Leuchtender Weihnachtsbaum"></div>
+
+              <div class="gift-panel">
+                <div class="gift-title">🎁 Dein Geschenk</div>
+                <div class="gift-sub">Tippe 3× auf die Box, um sie zu öffnen.</div>
+
+                <button id="gift-box" class="gift-box" type="button" aria-label="Geschenkbox antippen">
+                  <span class="gift-lid" aria-hidden="true"></span>
+                  <span class="gift-body" aria-hidden="true"></span>
+                  <span class="gift-ribbon" aria-hidden="true"></span>
+                  <span class="gift-bow" aria-hidden="true"></span>
+                </button>
+
+                <div id="code-card" class="code-card" hidden>
+                  <div class="code-title">Steam-Code</div>
+                  <div class="code-value" id="steam-code">STEAM-CODE-HIER-EINTRAGEN</div>
+                  <div class="code-hint">Kopieren und in Steam einlösen 🎮</div>
+                </div>
+
+                <div class="small-note">
+                  (Du kannst den Code oben im HTML/JS später einfach ersetzen.)
+                </div>
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
 
-    </main>
+      <!-- Kleine Overlay-Transitions -->
+      <div id="flash" class="flash" aria-hidden="true"></div>
 
-    <footer class="footer">
-      <div class="fine">Made with ❄️, Chaos-Kühen 🐄 und Liebe.</div>
-    </footer>
+    </div>
   </div>
 
-  <script src="scene_art.js"></script>
-  <script src="fx_magic.js"></script>
-  <script src="mini_tap.js"></script>
-  <script src="mini_snowwipe.js"></script>
-  <script src="core.js"></script>
+  <!-- Reihenfolge wichtig -->
+  <script src="anim_fx.js"></script>
+  <script src="art_svg.js"></script>
+  <script src="scratch_canvas.js"></script>
+  <script src="scene_sled.js"></script>
+  <script src="scene_snow.js"></script>
+  <script src="scene_finale.js"></script>
+  <script src="main.js"></script>
 </body>
-</html>
+            </html>
