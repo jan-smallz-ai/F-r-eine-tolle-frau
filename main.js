@@ -1,332 +1,295 @@
 (() => {
-  const sleighBtn = document.getElementById("sleighBtn");
-  const bubbleText = document.getElementById("bubbleText");
-  const scene = document.getElementById("scene");
+  const $ = (id) => document.getElementById(id);
 
-  const crashArea = document.getElementById("crashArea");
-  const wipeCanvas = document.getElementById("wipeCanvas");
-  const toGiftBtn = document.getElementById("toGiftBtn");
+  const rig = $("rig");
+  const bubbleTitle = $("bubbleTitle");
+  const bubbleText  = $("bubbleText");
+  const hint = $("hint");
 
-  const giftArea = document.getElementById("giftArea");
-  const shakeBtn = document.getElementById("shakeBtn");
-  const modal = document.getElementById("modal");
-  const copyBtn = document.getElementById("copyBtn");
-  const closeBtn = document.getElementById("closeBtn");
-  const codeText = document.getElementById("codeText");
+  const wipe = $("wipe");
+  const wipeCanvas = $("wipeCanvas");
+  const wipeSkip = $("wipeSkip");
 
-  // ---------------------------
-  // Stage state
-  // ---------------------------
+  const rescue = $("rescue");
+  const toGift = $("toGift");
+
+  const gift = $("gift");
+  const giftbox = $("giftbox");
+  const openGift = $("openGift");
+
+  const modal = $("modal");
+  const copyBtn = $("copyBtn");
+  const closeBtn = $("closeBtn");
+  const codeText = $("codeText");
+
+  // --- STATE ---
   let taps = 0;
-  let stage = 1; // 1 fly, 2 wipe, 3 gift
+  let stage = 1; // 1=tap santa, 2=wipe snow, 3=gift, 4=modal
+  let wipeCtx, isDrawing = false;
+  let lastPoint = null;
+  let dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
 
-  // ---------------------------
-  // Flying animation (NO timer limit)
-  // ---------------------------
-  // We fly LEFT -> RIGHT and the cows/santa in the SVG are drawn facing RIGHT.
-  let x = -560;
-  let y = 120;
-  let vx = 2.6;     // speed
-  let wobbleT = 0;
-  let rafId = null;
+  // Prevent "click not working" on mobile overlays:
+  // Ensure our main interactive elements are always clickable.
+  rig.style.pointerEvents = "auto";
 
-  function tick() {
-    if (stage !== 1) return;
-
-    wobbleT += 0.04;
-    x += vx;
-
-    // bounce in a smooth funny way
-    const wobbleY = Math.sin(wobbleT) * 10;
-    const wobbleRot = Math.sin(wobbleT * 1.6) * 1.2;
-
-    const sceneW = scene.clientWidth;
-    const offRight = sceneW + 560;
-
-    // wrap around (keep it going forever)
-    if (x > offRight) x = -620;
-
-    sleighBtn.style.transform = `translate(${x}px, ${y + wobbleY}px) rotate(${wobbleRot}deg)`;
-
-    rafId = requestAnimationFrame(tick);
+  function setBubble(title, text) {
+    bubbleTitle.textContent = title;
+    bubbleText.innerHTML = text;
   }
 
-  function startFlying() {
-    stage = 1;
-    taps = 0;
-    bubbleText.innerHTML = `Michelle! Hilfe! Tippe <b>3×</b> auf mich, damit ich landen kann!`;
-    sleighBtn.classList.remove("hidden");
-    crashArea.classList.add("hidden");
-    giftArea.classList.add("hidden");
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(tick);
-  }
+  function show(el) { el.hidden = false; }
+  function hide(el) { el.hidden = true; }
 
-  // ---------------------------
-  // Tap logic
-  // ---------------------------
-  sleighBtn.addEventListener("click", () => {
+  // --------------------
+  // STEP 1: Tap Santa 3x
+  // --------------------
+  function onRigTap() {
     if (stage !== 1) return;
-    taps += 1;
+
+    taps++;
+    rig.classList.add("hit");
+    setTimeout(() => rig.classList.remove("hit"), 120);
 
     if (taps < 3) {
-      bubbleText.innerHTML = `Aua! Noch <b>${3 - taps}×</b> tippen… die Kühe driften! 🐮💨`;
-      // tiny feedback
-      sleighBtn.animate(
-        [{ transform: sleighBtn.style.transform + " scale(1)" }, { transform: sleighBtn.style.transform + " scale(1.02)" }, { transform: sleighBtn.style.transform + " scale(1)" }],
-        { duration: 220, easing: "ease-out" }
-      );
+      setBubble("Santa:", `Michelle, bitte! Noch <b>${3 - taps}×</b> tippen – die Kühe sind außer Kontrolle! 🐮💨`);
+      hint.innerHTML = `Treffer: <b>${taps}/3</b> — tippe weiter! 👆`;
       return;
     }
 
-    // success → crash stage
-    bubbleText.innerHTML = `Uff… wir landen… irgendwie… 😬`;
+    // success -> crash into snow
     stage = 2;
-    cancelAnimationFrame(rafId);
+    hint.innerHTML = `Aua… Landung war… kreativ. 😵‍💫`;
+    setBubble("Santa:", `Uff! Ich bin im Schnee gelandet… <b>wisch</b> mich frei! ❄️`);
 
-    // quick "drop" animation then show wipe
-    sleighBtn.animate(
-      [
-        { transform: sleighBtn.style.transform, offset: 0 },
-        { transform: `translate(${x}px, ${y + 160}px) rotate(6deg)`, offset: 1 }
-      ],
-      { duration: 520, easing: "cubic-bezier(.2,.8,.2,1)" }
-    ).onfinish = () => {
-      sleighBtn.classList.add("hidden");
-      crashArea.classList.remove("hidden");
-      bubbleText.innerHTML = `Oh nein! Santa steckt im Schnee! <b>Wisch</b> ihn frei! ❄️`;
-      initWipe();
-    };
-  });
+    // Stop flying animation and hide rig nicely
+    rig.style.animationPlayState = "paused";
+    rig.style.transform = "translateX(640px) rotate(6deg)";
+    setTimeout(() => { rig.style.opacity = "0.15"; }, 120);
 
-  // ---------------------------
-  // Snow wipe canvas
-  // ---------------------------
-  let ctx, isDown = false;
-  let clearedUnlocked = false;
-
-  function resizeCanvasToCSS() {
-    // keep internal canvas size in sync with CSS width for good touch accuracy
-    const rect = wipeCanvas.getBoundingClientRect();
-    const scale = window.devicePixelRatio || 1;
-    wipeCanvas.width = Math.floor(rect.width * scale);
-    wipeCanvas.height = Math.floor(rect.height * scale);
-    ctx = wipeCanvas.getContext("2d");
-    ctx.scale(scale, scale);
+    startWipe();
   }
 
-  function paintSnow() {
+  rig.addEventListener("click", onRigTap, { passive: true });
+  rig.addEventListener("touchstart", (e) => { e.preventDefault(); onRigTap(); }, { passive: false });
+
+  // --------------------
+  // STEP 2: Snow Wipe (canvas erase)
+  // --------------------
+  function resizeCanvas() {
+    dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
     const rect = wipeCanvas.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
+    const w = Math.max(1, Math.floor(rect.width * dpr));
+    const h = Math.max(1, Math.floor(rect.height * dpr));
+    wipeCanvas.width = w;
+    wipeCanvas.height = h;
 
-    // snowy layer
-    ctx.globalCompositeOperation = "source-over";
-    ctx.clearRect(0, 0, w, h);
+    wipeCtx = wipeCanvas.getContext("2d", { willReadFrequently: true });
 
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, "rgba(255,255,255,.92)");
-    grad.addColorStop(1, "rgba(210,230,255,.92)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
+    // Draw snow layer
+    wipeCtx.save();
+    wipeCtx.clearRect(0, 0, w, h);
 
-    // snow blobs
-    ctx.fillStyle = "rgba(255,255,255,.65)";
-    for (let i = 0; i < 90; i++) {
-      const r = 10 + Math.random() * 26;
+    // Background (slightly visible Santa area under snow)
+    wipeCtx.fillStyle = "rgba(255,255,255,0.06)";
+    wipeCtx.fillRect(0, 0, w, h);
+
+    // Underlay hint: a faint silhouette (so user "sees" something)
+    wipeCtx.fillStyle = "rgba(255,211,106,0.10)";
+    wipeCtx.beginPath();
+    wipeCtx.ellipse(w*0.55, h*0.55, w*0.20, h*0.18, 0, 0, Math.PI*2);
+    wipeCtx.fill();
+
+    // Snow on top
+    wipeCtx.globalCompositeOperation = "source-over";
+    wipeCtx.fillStyle = "rgba(245,248,255,0.95)";
+    wipeCtx.fillRect(0, 0, w, h);
+
+    // Add snow speckles
+    for (let i = 0; i < 220; i++) {
       const x = Math.random() * w;
       const y = Math.random() * h;
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
+      const r = (Math.random() * 6 + 2) * dpr;
+      wipeCtx.fillStyle = `rgba(255,255,255,${0.35 + Math.random()*0.5})`;
+      wipeCtx.beginPath();
+      wipeCtx.arc(x, y, r, 0, Math.PI * 2);
+      wipeCtx.fill();
     }
 
-    // hint text on snow
-    ctx.fillStyle = "rgba(0,0,0,.25)";
-    ctx.font = "700 22px system-ui";
-    ctx.textAlign = "center";
-    ctx.fillText("Wisch mich weg! ❄️👉", w / 2, 60);
+    wipeCtx.restore();
+
+    // Switch to erase mode
+    wipeCtx.globalCompositeOperation = "destination-out";
+    wipeCtx.lineCap = "round";
+    wipeCtx.lineJoin = "round";
+    wipeCtx.lineWidth = 42 * dpr;
   }
 
-  function eraseAt(clientX, clientY) {
+  function startWipe() {
+    show(wipe);
+    requestAnimationFrame(() => {
+      resizeCanvas();
+    });
+  }
+
+  function getPoint(evt) {
     const rect = wipeCanvas.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.beginPath();
-    ctx.arc(x, y, 34, 0, Math.PI * 2);
-    ctx.fill();
+    const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+    const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+    const x = (clientX - rect.left) * dpr;
+    const y = (clientY - rect.top) * dpr;
+    return { x, y };
   }
 
-  function estimateCleared() {
-    // quick downsample-based estimate
-    const rect = wipeCanvas.getBoundingClientRect();
-    const w = Math.floor(rect.width);
-    const h = Math.floor(rect.height);
-
-    // read small sample grid instead of full pixels (fast on phones)
-    const sampleW = 120;
-    const sampleH = Math.floor(120 * (h / w));
-    const tmp = document.createElement("canvas");
-    tmp.width = sampleW;
-    tmp.height = sampleH;
-    const tctx = tmp.getContext("2d");
-    tctx.drawImage(wipeCanvas, 0, 0, sampleW, sampleH);
-
-    const data = tctx.getImageData(0, 0, sampleW, sampleH).data;
-    let transparent = 0;
-    for (let i = 3; i < data.length; i += 4) {
-      if (data[i] < 20) transparent++;
-    }
-    const ratio = transparent / (data.length / 4);
-    return ratio;
+  function drawTo(p) {
+    if (!wipeCtx) return;
+    if (!lastPoint) lastPoint = p;
+    wipeCtx.beginPath();
+    wipeCtx.moveTo(lastPoint.x, lastPoint.y);
+    wipeCtx.lineTo(p.x, p.y);
+    wipeCtx.stroke();
+    lastPoint = p;
   }
 
-  function unlockAfterWipe() {
-    if (clearedUnlocked) return;
-    clearedUnlocked = true;
-
-    // santa happy wobble (shake the under card a bit)
-    const under = document.getElementById("underSanta");
-    under.animate(
-      [
-        { transform: "translateY(0) rotate(0deg)" },
-        { transform: "translateY(-4px) rotate(-1deg)" },
-        { transform: "translateY(2px) rotate(1deg)" },
-        { transform: "translateY(0) rotate(0deg)" }
-      ],
-      { duration: 700, iterations: 2, easing: "ease-in-out" }
-    );
-
-    bubbleText.innerHTML = `Jaaaa! Danke, Michelle! 🎅✨ Kurz wackeln wir – dann gibt’s dein Geschenk!`;
-    toGiftBtn.classList.remove("hidden");
+  function beginDraw(evt) {
+    if (stage !== 2) return;
+    isDrawing = true;
+    lastPoint = getPoint(evt);
+    drawTo(lastPoint);
+    evt.preventDefault();
   }
 
-  function initWipe() {
-    clearedUnlocked = false;
-    toGiftBtn.classList.add("hidden");
+  function moveDraw(evt) {
+    if (!isDrawing || stage !== 2) return;
+    const p = getPoint(evt);
+    drawTo(p);
+    evt.preventDefault();
+  }
 
-    // set a consistent canvas size: make it match container width automatically
-    // (canvas already has CSS responsive via width:100%)
-    resizeCanvasToCSS();
-    paintSnow();
+  function endDraw(evt) {
+    if (stage !== 2) return;
+    isDrawing = false;
+    lastPoint = null;
+    evt && evt.preventDefault();
+    checkCleared();
+  }
 
-    // pointer events (touch + mouse)
-    const down = (e) => {
-      if (stage !== 2) return;
-      isDown = true;
-      const p = getPoint(e);
-      eraseAt(p.x, p.y);
-      e.preventDefault();
-    };
-    const move = (e) => {
-      if (stage !== 2 || !isDown) return;
-      const p = getPoint(e);
-      eraseAt(p.x, p.y);
-      // check wipe progress sometimes
-      if (Math.random() < 0.08) {
-        const cleared = estimateCleared();
-        if (cleared > 0.45) unlockAfterWipe();
+  wipeCanvas.addEventListener("mousedown", beginDraw);
+  wipeCanvas.addEventListener("mousemove", moveDraw);
+  window.addEventListener("mouseup", endDraw);
+
+  wipeCanvas.addEventListener("touchstart", beginDraw, { passive: false });
+  wipeCanvas.addEventListener("touchmove", moveDraw, { passive: false });
+  wipeCanvas.addEventListener("touchend", endDraw, { passive: false });
+
+  wipeSkip.addEventListener("click", () => {
+    resizeCanvas(); // redraw snow if something glitched
+  });
+
+  window.addEventListener("resize", () => {
+    if (!wipe.hidden) resizeCanvas();
+  });
+
+  function checkCleared() {
+    // Estimate cleared percentage by sampling pixels
+    if (!wipeCtx) return;
+
+    const w = wipeCanvas.width;
+    const h = wipeCanvas.height;
+    const img = wipeCtx.getImageData(0, 0, w, h).data;
+
+    // We are in destination-out mode; erased pixels => alpha becomes 0 in the snow layer area.
+    // We'll sample a grid for speed.
+    const step = Math.max(8, Math.floor(12 * dpr));
+    let total = 0, cleared = 0;
+
+    for (let y = 0; y < h; y += step) {
+      for (let x = 0; x < w; x += step) {
+        const idx = (y * w + x) * 4 + 3; // alpha channel
+        total++;
+        if (img[idx] < 40) cleared++;
       }
-      e.preventDefault();
-    };
-    const up = () => { isDown = false; };
+    }
 
-    wipeCanvas.onpointerdown = down;
-    wipeCanvas.onpointermove = move;
-    window.onpointerup = up;
+    const pct = cleared / total;
+    if (pct >= 0.42) {
+      // Success
+      stage = 3;
+      hide(wipe);
+      show(rescue);
 
-    // handle resize
-    window.addEventListener("resize", () => {
-      if (stage !== 2) return;
-      resizeCanvasToCSS();
-      paintSnow();
-    }, { passive: true });
+      // little celebration wobble
+      document.querySelector(".stage").classList.add("celebrate");
+      setTimeout(() => document.querySelector(".stage").classList.remove("celebrate"), 900);
+    }
   }
 
-  function getPoint(e) {
-    if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    if (e.changedTouches && e.changedTouches[0]) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-  }
-
-  // proceed to gift
-  toGiftBtn.addEventListener("click", () => {
-    stage = 3;
-    crashArea.classList.add("hidden");
-    giftArea.classList.remove("hidden");
-    bubbleText.innerHTML = `Okay… jetzt aber: Geschenkzeit! 🎁`;
+  // --------------------
+  // STEP 3: Gift
+  // --------------------
+  toGift.addEventListener("click", () => {
+    hide(rescue);
+    show(gift);
   });
 
-  // ---------------------------
-  // Gift reveal (shake or click)
-  // ---------------------------
-  function openModal() {
-    modal.classList.remove("hidden");
+  function openNow() {
+    // small shake animation, then show modal
+    giftbox.classList.add("shake");
+    setTimeout(() => giftbox.classList.remove("shake"), 650);
+    setTimeout(() => {
+      stage = 4;
+      show(modal);
+    }, 450);
   }
 
-  function shakeAnimation() {
-    const present = document.getElementById("present");
-    present.animate(
-      [
-        { transform: "translateX(0) rotate(0deg)" },
-        { transform: "translateX(-6px) rotate(-2deg)" },
-        { transform: "translateX(6px) rotate(2deg)" },
-        { transform: "translateX(-5px) rotate(-2deg)" },
-        { transform: "translateX(5px) rotate(2deg)" },
-        { transform: "translateX(0) rotate(0deg)" }
-      ],
-      { duration: 520, easing: "ease-in-out" }
-    );
-  }
-
-  shakeBtn.addEventListener("click", () => {
-    if (stage !== 3) return;
-    shakeAnimation();
-    setTimeout(openModal, 420);
+  openGift.addEventListener("click", openNow);
+  giftbox.addEventListener("click", openNow);
+  giftbox.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") openNow();
   });
 
-  // Optional device motion (won't break if blocked)
+  // Device motion (optional)
   let lastShake = 0;
   window.addEventListener("devicemotion", (e) => {
     if (stage !== 3) return;
     const a = e.accelerationIncludingGravity;
     if (!a) return;
-    const strength = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
-    const now = Date.now();
-    if (strength > 28 && now - lastShake > 900) {
-      lastShake = now;
-      shakeAnimation();
-      setTimeout(openModal, 420);
+    const m = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
+    if (m > 28 && Date.now() - lastShake > 900) {
+      lastShake = Date.now();
+      openNow();
     }
   });
 
+  // --------------------
+  // MODAL: Copy code
+  // --------------------
   copyBtn.addEventListener("click", async () => {
+    const text = codeText.textContent.trim();
     try {
-      await navigator.clipboard.writeText(codeText.textContent.trim());
-      copyBtn.textContent = "Kopiert!";
-      setTimeout(() => (copyBtn.textContent = "Kopieren"), 900);
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = "Kopiert ✅";
+      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
     } catch {
-      // fallback: select text
-      const r = document.createRange();
-      r.selectNodeContents(codeText);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(r);
-      copyBtn.textContent = "Markiert!";
-      setTimeout(() => (copyBtn.textContent = "Kopieren"), 900);
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      copyBtn.textContent = "Kopiert ✅";
+      setTimeout(() => (copyBtn.textContent = "Kopieren"), 1200);
     }
   });
 
   closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
+    hide(modal);
   });
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.add("hidden");
-  });
-
-  // start
-  startFlying();
+  // Ensure start state
+  hide(wipe);
+  hide(rescue);
+  hide(gift);
+  hide(modal);
 })();
