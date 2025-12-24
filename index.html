@@ -2,176 +2,133 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Michelles Geschenk 🎄</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Frohe Weihnachten, Michelle 🎄</title>
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
   <div class="bg"></div>
 
+  <!-- Schneeflocken (rein optisch) -->
+  <div class="snow" aria-hidden="true"></div>
+
   <main class="wrap">
-    <header class="hero">
+    <header class="top">
       <div class="badge">🎁</div>
-      <h1>Frohe Weihnachten, <span class="gold">Michelle</span> ✨</h1>
-      <p class="sub">
-        Santa hat ’ne geniale Idee… nur sind die Kühe <b>außer Kontrolle</b>. 🐄🛷<br>
-        <span class="hint">Mini-Game: Tipp Santa an, bevor er wegfliegt!</span>
-      </p>
+      <h1>Frohe Weihnachten,<br><span class="gold">Michelle</span> ✨</h1>
+      <p class="sub">Dieses Mal: Santa im Schlitten… aber die <b>Kühe sind außer Kontrolle</b>. 🐄🛷</p>
     </header>
 
-    <section class="stage" aria-label="Spielbereich">
-      <!-- Flug-Szene -->
-      <div id="flightScene" class="scene">
-        <div class="speech" id="speechFlight">Michelle! Hilfe! Die Kühe sind außer Kontrolle! 😵‍💫</div>
-
-        <div id="sleighRig" class="sleighRig" aria-hidden="true">
-          <!-- Cows (ziehen rechts rum, gucken nach rechts) -->
-          <div class="cows">
-            <div class="cow cow1"></div>
-            <div class="cow cow2"></div>
-            <div class="cow cow3"></div>
+    <section class="stageCard">
+      <div class="stage" id="stage">
+        <!-- Flugobjekt -->
+        <button class="flyer" id="flyer" type="button" aria-label="Santa im Schlitten antippen">
+          <div class="bubble bubble--top" id="bubbleTop">
+            Michelle, Hilfe! Die Kühe sind außer Kontrolle!<br>
+            <b>Tipp: 3× antippen</b> ✋✋✋
           </div>
 
-          <!-- Rope -->
-          <div class="rope"></div>
+          <!-- “Sleigh + cows” als Cartoon-Formen -->
+          <div class="rig" id="rig">
+            <!-- Kühe vorne -->
+            <div class="cows">
+              <div class="cow">
+                <div class="horn hornL"></div><div class="horn hornR"></div>
+                <div class="cowHead"></div>
+                <div class="cowNose"></div>
+              </div>
+              <div class="cow">
+                <div class="horn hornL"></div><div class="horn hornR"></div>
+                <div class="cowHead"></div>
+                <div class="cowNose"></div>
+              </div>
+            </div>
 
-          <!-- Sleigh + Santa -->
-          <div class="sleigh">
-            <div id="santa" class="santa" role="button" aria-label="Santa antippen" tabindex="0">
+            <!-- Seil -->
+            <div class="rope"></div>
+
+            <!-- Schlitten -->
+            <div class="sleigh">
+              <div class="rail"></div>
+              <div class="sledBody"></div>
+            </div>
+
+            <!-- Santa im Schlitten -->
+            <div class="santa">
               <div class="hat"></div>
-              <div class="face">
-                <div class="brow b1"></div><div class="brow b2"></div>
-                <div class="eye e1"></div><div class="eye e2"></div>
-                <div class="nose"></div>
-                <div class="beard"></div>
-                <div class="mouth"></div>
-              </div>
-              <div class="body">
-                <div class="belt"></div>
-                <div class="arm a1"></div>
-                <div class="arm a2"></div>
-              </div>
-              <div class="boot b1"></div>
-              <div class="boot b2"></div>
-            </div>
-
-            <div class="sled"></div>
-          </div>
-        </div>
-
-        <div class="hud">
-          <div class="meter">
-            <div class="meterLabel">Treffer</div>
-            <div class="meterBar"><div id="tapFill" class="meterFill"></div></div>
-            <div id="tapText" class="meterText">0 / 3</div>
-          </div>
-
-          <button id="skipBtn" class="btn ghost" type="button">Überspringen</button>
-        </div>
-      </div>
-
-      <!-- Schnee-Szene -->
-      <div id="snowScene" class="scene hidden">
-        <div class="speech" id="speechSnow">Uff! Bruchlandung… 😶‍🌫️ Wisch den Schnee weg, bitte!</div>
-
-        <div class="snowCard">
-          <div id="stuckRig" class="stuckRig" aria-hidden="true">
-            <div class="cows parked">
-              <div class="cow cow1"></div>
-              <div class="cow cow2"></div>
-              <div class="cow cow3"></div>
-            </div>
-            <div class="rope short"></div>
-            <div class="sleigh parked">
-              <div class="santa stuck">
-                <div class="hat"></div>
-                <div class="face">
-                  <div class="brow b1"></div><div class="brow b2"></div>
-                  <div class="eye e1"></div><div class="eye e2"></div>
-                  <div class="nose"></div>
-                  <div class="beard"></div>
-                  <div class="mouth"></div>
-                </div>
-                <div class="body">
-                  <div class="belt"></div>
-                  <div class="arm a1"></div>
-                  <div class="arm a2"></div>
-                </div>
-                <div class="boot b1"></div>
-                <div class="boot b2"></div>
-              </div>
-              <div class="sled"></div>
+              <div class="face"></div>
+              <div class="beard"></div>
+              <div class="body"></div>
+              <div class="belt"></div>
             </div>
           </div>
+        </button>
 
-          <!-- Scratch-Cover -->
-          <canvas id="scratch" class="scratch" aria-label="Schnee wegwischen"></canvas>
+        <!-- Crash / Schnee-Wischen -->
+        <div class="crash" id="crash" hidden>
+          <div class="bubble bubble--mid" id="bubbleMid">
+            Aua! Ich bin im Schnee gelandet…<br>
+            <b>Wisch den Schnee weg</b> ❄️➡️
+          </div>
 
-          <div class="wipeHint">👉 Wisch über den Schnee, bis Santa wieder zu sehen ist.</div>
-        </div>
-      </div>
-
-      <!-- Geschenk-Szene -->
-      <div id="giftScene" class="scene hidden">
-        <div class="speech" id="speechGift">DANKE, MICHELLE! 🥳 Du hast Weihnachten gerettet!</div>
-
-        <div class="danceBox">
-          <div id="danceRig" class="danceRig">
-            <div class="santa dance">
+          <div class="crashScene">
+            <div class="snowPile"></div>
+            <div class="santaPeek" id="santaPeek" aria-hidden="true">
               <div class="hat"></div>
-              <div class="face">
-                <div class="brow b1"></div><div class="brow b2"></div>
-                <div class="eye e1"></div><div class="eye e2"></div>
-                <div class="nose"></div>
-                <div class="beard"></div>
-                <div class="mouth smile"></div>
-              </div>
-              <div class="body">
-                <div class="belt"></div>
-                <div class="arm a1 wave"></div>
-                <div class="arm a2 wave"></div>
-              </div>
-              <div class="boot b1"></div>
-              <div class="boot b2"></div>
+              <div class="face"></div>
+              <div class="beard"></div>
+            </div>
+            <canvas id="wipe" class="wipeCanvas" width="900" height="540" aria-label="Schnee wegwischen"></canvas>
+          </div>
+        </div>
+
+        <!-- Danke / Geschenk -->
+        <div class="gift" id="gift" hidden>
+          <div class="bubble bubble--mid">
+            <b>Danke, Michelle!</b> Du hast Weihnachten gerettet! 🎉<br>
+            Hier ist dein Geschenk… und Santa wackelt vor Freude 😄
+          </div>
+
+          <div class="giftScene">
+            <div class="santaDance" aria-hidden="true">
+              <div class="hat"></div>
+              <div class="face"></div>
+              <div class="beard"></div>
+              <div class="body"></div>
+              <div class="belt"></div>
             </div>
 
-            <div class="giftWrap" aria-hidden="true">
-              <div class="giftBox"></div>
+            <div class="present" id="present" aria-hidden="true">
+              <div class="box"></div>
               <div class="ribbonV"></div>
               <div class="ribbonH"></div>
               <div class="bow"></div>
             </div>
           </div>
 
-          <button id="openGiftBtn" class="btn primary" type="button">Geschenk öffnen 🎁</button>
+          <div class="codeCard">
+            <div class="codeRow">
+              <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
+              <button class="btn" id="copyBtn" type="button">Kopieren</button>
+            </div>
+            <p class="tiny">Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.</p>
+          </div>
+
+          <div class="bubble bubble--end">
+            Jan wünscht dir frohe Weihnachten und einen schönen Abend. 🎄✨
+          </div>
         </div>
+
       </div>
     </section>
 
-    <p class="ps">PS: Wenn du lachst, war’s Absicht. 😄</p>
+    <footer class="foot">
+      <span>PS: Wenn du lachst, war’s Absicht. 😄</span>
+    </footer>
   </main>
 
-  <!-- Modal -->
-  <div id="modal" class="modal hidden" aria-hidden="true">
-    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
-      <p class="modalText">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
-
-      <div class="codeBox">
-        <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
-        <button id="copyBtn" class="btn small" type="button">Kopieren</button>
-      </div>
-
-      <p class="tiny">Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.</p>
-
-      <button id="closeBtn" class="btn ghost" type="button">Schließen</button>
-    </div>
-  </div>
-
-  <div id="snowLayer" class="snowLayer" aria-hidden="true"></div>
-
-  <!-- Wichtig: NUR main.js laden -->
+  <!-- WICHTIG: wir benutzen NUR main.js -->
   <script src="main.js?v=4"></script>
 </body>
-                  </html>
+</html>
