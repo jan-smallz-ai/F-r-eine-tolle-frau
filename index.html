@@ -2,133 +2,151 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Frohe Weihnachten, Michelle 🎄</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Frohe Weihnachten, Michelle ✨</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <div class="bg"></div>
 
-  <!-- Schneeflocken (rein optisch) -->
+  <!-- Schnee im Hintergrund -->
   <div class="snow" aria-hidden="true"></div>
 
   <main class="wrap">
     <header class="top">
       <div class="badge">🎁</div>
       <h1>Frohe Weihnachten,<br><span class="gold">Michelle</span> ✨</h1>
-      <p class="sub">Dieses Mal: Santa im Schlitten… aber die <b>Kühe sind außer Kontrolle</b>. 🐄🛷</p>
+      <p class="sub">Du Weihnachtswunder… Santa hat ein kleines Problem. 🐮🛷</p>
     </header>
 
-    <section class="stageCard">
-      <div class="stage" id="stage">
-        <!-- Flugobjekt -->
-        <button class="flyer" id="flyer" type="button" aria-label="Santa im Schlitten antippen">
-          <div class="bubble bubble--top" id="bubbleTop">
-            Michelle, Hilfe! Die Kühe sind außer Kontrolle!<br>
-            <b>Tipp: 3× antippen</b> ✋✋✋
+    <!-- STAGE 1: Flug + 3x antippen -->
+    <section class="card stage" id="stageFly">
+      <div class="speech left" id="speechFly">
+        <div class="bubble">
+          <strong>Santa:</strong> Michelle! Hilfe! 😵‍💫<br>
+          Die Kühe sind außer Kontrolle!<br>
+          <span class="small">Tipp: Tippe <b>3×</b> auf Santa, damit er landen kann.</span>
+        </div>
+        <div class="tail"></div>
+      </div>
+
+      <div class="skyBox" id="skyBox">
+        <button class="sleigh" id="sleighBtn" type="button" aria-label="Santa antippen">
+          <div class="cows">
+            <div class="cow"></div>
+            <div class="cow"></div>
           </div>
 
-          <!-- “Sleigh + cows” als Cartoon-Formen -->
-          <div class="rig" id="rig">
-            <!-- Kühe vorne -->
-            <div class="cows">
-              <div class="cow">
-                <div class="horn hornL"></div><div class="horn hornR"></div>
-                <div class="cowHead"></div>
-                <div class="cowNose"></div>
-              </div>
-              <div class="cow">
-                <div class="horn hornL"></div><div class="horn hornR"></div>
-                <div class="cowHead"></div>
-                <div class="cowNose"></div>
-              </div>
-            </div>
+          <div class="ropes" aria-hidden="true">
+            <span></span><span></span>
+          </div>
 
-            <!-- Seil -->
-            <div class="rope"></div>
+          <div class="sled" aria-hidden="true"></div>
 
-            <!-- Schlitten -->
-            <div class="sleigh">
-              <div class="rail"></div>
-              <div class="sledBody"></div>
-            </div>
-
-            <!-- Santa im Schlitten -->
-            <div class="santa">
-              <div class="hat"></div>
-              <div class="face"></div>
+          <div class="santa" aria-hidden="true">
+            <div class="hat"></div>
+            <div class="head">
+              <div class="eye e1"></div>
+              <div class="eye e2"></div>
+              <div class="nose"></div>
               <div class="beard"></div>
-              <div class="body"></div>
-              <div class="belt"></div>
+              <div class="moust"></div>
             </div>
+            <div class="body"></div>
+            <div class="belt"></div>
+            <div class="arm a1"></div>
+            <div class="arm a2"></div>
           </div>
         </button>
+      </div>
 
-        <!-- Crash / Schnee-Wischen -->
-        <div class="crash" id="crash" hidden>
-          <div class="bubble bubble--mid" id="bubbleMid">
-            Aua! Ich bin im Schnee gelandet…<br>
-            <b>Wisch den Schnee weg</b> ❄️➡️
-          </div>
-
-          <div class="crashScene">
-            <div class="snowPile"></div>
-            <div class="santaPeek" id="santaPeek" aria-hidden="true">
-              <div class="hat"></div>
-              <div class="face"></div>
-              <div class="beard"></div>
-            </div>
-            <canvas id="wipe" class="wipeCanvas" width="900" height="540" aria-label="Schnee wegwischen"></canvas>
-          </div>
-        </div>
-
-        <!-- Danke / Geschenk -->
-        <div class="gift" id="gift" hidden>
-          <div class="bubble bubble--mid">
-            <b>Danke, Michelle!</b> Du hast Weihnachten gerettet! 🎉<br>
-            Hier ist dein Geschenk… und Santa wackelt vor Freude 😄
-          </div>
-
-          <div class="giftScene">
-            <div class="santaDance" aria-hidden="true">
-              <div class="hat"></div>
-              <div class="face"></div>
-              <div class="beard"></div>
-              <div class="body"></div>
-              <div class="belt"></div>
-            </div>
-
-            <div class="present" id="present" aria-hidden="true">
-              <div class="box"></div>
-              <div class="ribbonV"></div>
-              <div class="ribbonH"></div>
-              <div class="bow"></div>
-            </div>
-          </div>
-
-          <div class="codeCard">
-            <div class="codeRow">
-              <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
-              <button class="btn" id="copyBtn" type="button">Kopieren</button>
-            </div>
-            <p class="tiny">Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.</p>
-          </div>
-
-          <div class="bubble bubble--end">
-            Jan wünscht dir frohe Weihnachten und einen schönen Abend. 🎄✨
-          </div>
-        </div>
-
+      <div class="progressRow">
+        <div class="mini">Santa-Taps: <b id="tapCount">0</b>/3</div>
+        <div class="hint">Keine Zeitbegrenzung. Ganz entspannt. 😄</div>
       </div>
     </section>
 
-    <footer class="foot">
-      <span>PS: Wenn du lachst, war’s Absicht. 😄</span>
-    </footer>
+    <!-- STAGE 2: Crash + Schnee wegwischen -->
+    <section class="card stage hidden" id="stageSnow">
+      <div class="speech right" id="speechSnow">
+        <div class="bubble">
+          <strong>Santa:</strong> Uff… ich bin im Schnee gelandet. 🥶<br>
+          <span class="small">Wisch den Schnee weg, damit du mich wieder siehst!</span>
+        </div>
+        <div class="tail"></div>
+      </div>
+
+      <div class="snowScene">
+        <div class="crash">
+          <div class="santaStand" id="santaStand">
+            <div class="hat"></div>
+            <div class="head">
+              <div class="eye e1"></div>
+              <div class="eye e2"></div>
+              <div class="nose"></div>
+              <div class="beard"></div>
+              <div class="moust"></div>
+            </div>
+            <div class="body"></div>
+            <div class="belt"></div>
+          </div>
+
+          <div class="snowPile" aria-hidden="true"></div>
+          <canvas id="wipeCanvas" class="wipeCanvas" aria-label="Schnee wegwischen"></canvas>
+        </div>
+      </div>
+      <div class="mini center">Wischfläche: <b id="wipePct">0%</b></div>
+    </section>
+
+    <!-- STAGE 3: Danke + Tanz + Geschenk -->
+    <section class="card stage hidden" id="stageGift">
+      <div class="speech left" id="speechGift">
+        <div class="bubble">
+          <strong>Santa:</strong> Danke, Michelle! 🎉<br>
+          Du hast Weihnachten gerettet!<br>
+          <span class="small">Kurz wackeln wir vor Freude…</span>
+        </div>
+        <div class="tail"></div>
+      </div>
+
+      <div class="thankYou">
+        <div class="danceRow" id="danceRow">
+          <div class="santaDance" aria-hidden="true"></div>
+          <div class="giftBox" id="giftBox" aria-hidden="true"></div>
+        </div>
+
+        <button class="btn primary" id="openGiftBtn" type="button">
+          Geschenk öffnen 🎁
+        </button>
+
+        <div class="speech centerish" id="speechFinal" aria-hidden="true">
+          <div class="bubble">
+            <strong>Santa:</strong> Jan wünscht dir frohe Weihnachten<br>und einen schönen Abend. ✨
+          </div>
+          <div class="tail"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- WICHTIG: wir benutzen NUR main.js -->
-  <script src="main.js?v=4"></script>
+  <!-- Code-Modal -->
+  <div class="modal hidden" id="modal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Tadaaa! 🎁✨</h2>
+      <p class="modalText">Michelle, du Weihnachtswunder – hier ist dein Steam-Code:</p>
+
+      <div class="codebox">
+        <code id="codeText">HIER_STEAM_CODE_EINFÜGEN</code>
+        <button class="btn" id="copyBtn" type="button">Kopieren</button>
+      </div>
+
+      <p class="small muted">Tipp: In Steam → „Guthabencode einlösen“ → Code einfügen.</p>
+
+      <button class="btn ghost" id="closeBtn" type="button">Schließen</button>
+    </div>
+  </div>
+
+  <!-- Nur EIN Script! -->
+  <script src="main.js"></script>
 </body>
 </html>
