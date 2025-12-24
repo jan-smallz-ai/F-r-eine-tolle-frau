@@ -1,374 +1,653 @@
 :root{
-  --bg1:#0b1530;
-  --bg2:#0a2a4a;
-  --card:#0f1f3aa8;
-  --text:#f3f6ff;
-  --muted:#cfe0ffcc;
-  --btn:#ffffff;
-  --btnText:#0b1530;
-  --shadow: 0 18px 50px rgba(0,0,0,.35);
-  --round: 22px;
+  --bg1:#071126;
+  --bg2:#0b1c3f;
+  --panel: rgba(255,255,255,.10);
+  --panel2: rgba(255,255,255,.14);
+  --text:#f5f7ff;
+  --muted: rgba(245,247,255,.75);
+  --accent:#ffd36a;
+  --good:#86ffb5;
+  --bad:#ff7a7a;
+  --shadow: 0 12px 40px rgba(0,0,0,.35);
+  --radius: 18px;
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family:var(--font);
   color:var(--text);
-  background: radial-gradient(1200px 800px at 20% 0%, #123b7a 0%, var(--bg1) 45%, #070e1c 100%);
+  background: radial-gradient(1200px 700px at 20% 10%, #173060 0%, transparent 60%),
+              radial-gradient(900px 600px at 90% 20%, #1a3a77 0%, transparent 60%),
+              linear-gradient(180deg, var(--bg2), var(--bg1));
   overflow:hidden;
 }
 
-.app{
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:16px;
+.app{height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
+.stage{
+  width:min(920px, 100%);
+  height:min(760px, 100%);
+  position:relative;
+  border-radius:var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+  padding:18px;
 }
 
-.screen{
-  width:min(560px, 92vw);
+.snow{
+  position:fixed; inset:0; pointer-events:none;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.8) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 80px 120px, rgba(255,255,255,.7) 50%, transparent 52%),
+    radial-gradient(2px 2px at 180px 220px, rgba(255,255,255,.75) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 260px 60px, rgba(255,255,255,.6) 50%, transparent 52%),
+    radial-gradient(2px 2px at 340px 160px, rgba(255,255,255,.8) 50%, transparent 52%);
+  background-size: 420px 260px;
+  opacity:.35;
+  animation: snowDrift 10s linear infinite;
+}
+
+@keyframes snowDrift{
+  from{transform: translateY(-40px)}
+  to{transform: translateY(40px)}
+}
+
+.scene{
+  position:absolute; inset:0;
+  padding:18px;
   display:none;
 }
-.screen.active{display:block}
+.scene.active{display:block; animation: popIn .35s ease-out}
+@keyframes popIn{from{opacity:0; transform: translateY(12px)} to{opacity:1; transform:none}}
 
-.card{
-  background:var(--card);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:var(--round);
-  box-shadow:var(--shadow);
-  padding:18px 18px 16px;
-  backdrop-filter: blur(10px);
-}
-
-h1,h2{margin:6px 0 10px}
-p{margin:10px 0;color:var(--muted);line-height:1.35}
-
-.hint{opacity:.9;font-size:.92rem;margin-top:10px}
-
-.btn{
-  width:100%;
-  border:0;
-  border-radius:16px;
-  padding:14px 16px;
-  background:var(--btn);
-  color:var(--btnText);
+.headline{
   font-weight:800;
-  letter-spacing:.2px;
-  cursor:pointer;
-  box-shadow: 0 14px 26px rgba(0,0,0,.25);
-  transform: translateZ(0);
+  letter-spacing:.3px;
+  font-size: clamp(18px, 2.8vw, 28px);
+  margin: 4px 0 12px;
+  text-shadow: 0 10px 30px rgba(0,0,0,.45);
 }
-.btn:disabled{opacity:.45; cursor:not-allowed}
-.btn.small{width:auto; padding:10px 12px; border-radius:14px; margin-top:10px}
 
 .bubble{
-  display:inline-block;
-  padding:10px 12px;
-  border-radius:18px;
-  background: rgba(255,255,255,.12);
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
   border:1px solid rgba(255,255,255,.14);
-  color:var(--text);
-  box-shadow: 0 10px 22px rgba(0,0,0,.20);
-  max-width:100%;
-}
-.bubble.left{border-bottom-left-radius:6px}
-.bubble.right{border-bottom-right-radius:6px; float:right}
-.bubble:after{content:""; display:block; clear:both}
-
-/* Szene (Baum + Santa + Geschenk) */
-.scene, .finalScene{
-  margin:14px 0 10px;
+  border-radius: 18px;
+  padding:14px 14px;
+  max-width: 640px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.25);
   position:relative;
-  height:220px;
-  border-radius:18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+}
+.bubble:after{
+  content:"";
+  position:absolute;
+  left: 32px;
+  bottom:-10px;
+  width:18px;height:18px;
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border-left:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(255,255,255,.14);
+  transform: rotate(45deg);
+}
+.bubble-title{font-weight:900; color: var(--accent); margin-bottom:4px}
+.hint{margin-top:10px; color:var(--muted); font-size:13px}
+.counter{
+  margin-top:10px;
+  font-weight:800;
+  background: rgba(0,0,0,.25);
+  display:inline-block;
+  padding:8px 12px;
+  border-radius: 999px;
   border:1px solid rgba(255,255,255,.10);
+}
+
+.world{
+  margin-top:18px;
+  height: calc(100% - 210px);
+  min-height: 360px;
+  position:relative;
+  border-radius: 18px;
+  border:1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(800px 360px at 20% 30%, rgba(255,255,255,.07), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.05));
   overflow:hidden;
 }
-.scene{height:240px}
-.finalScene{height:240px; margin-top:14px}
 
-.ground{
+.sled{
   position:absolute;
-  left:0; right:0; bottom:0;
-  height:46px;
-  background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.05));
-}
-
-/* Baum */
-.tree{
-  position:absolute;
-  left:16px;
-  bottom:26px;
-  width:170px;
-  height:190px;
-  filter: drop-shadow(0 16px 18px rgba(0,0,0,.35));
-  animation: wobble 2.6s ease-in-out infinite;
-}
-.tree.big{left:18px; bottom:18px; width:200px; height:220px}
-.tree.tap{
-  position:relative;
-  left:auto; bottom:auto;
-  margin:0 auto;
-  width:min(320px, 78vw);
-  height:340px;
-  animation: wobble 2.2s ease-in-out infinite;
-}
-
-.tree .layer{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  width:0; height:0;
-  border-left: 90px solid transparent;
-  border-right: 90px solid transparent;
-  border-bottom: 78px solid rgba(10, 140, 70, .92);
-  filter: brightness(1.05);
-}
-.tree.big .layer{border-left-width:105px;border-right-width:105px;border-bottom-width:88px}
-.tree.tap .layer{border-left-width:140px;border-right-width:140px;border-bottom-width:120px}
-
-.tree .l1{top:12px}
-.tree .l2{top:48px; filter:brightness(.98)}
-.tree .l3{top:86px; filter:brightness(.93)}
-.tree.big .l1{top:14px}
-.tree.big .l2{top:58px}
-.tree.big .l3{top:104px}
-.tree.tap .l1{top:16px}
-.tree.tap .l2{top:92px}
-.tree.tap .l3{top:168px}
-
-.tree .trunk{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:-2px;
-  width:38px; height:50px;
-  border-radius:10px;
-  background: rgba(120,70,30,.95);
-  box-shadow: inset 0 -10px 0 rgba(0,0,0,.18);
-}
-.tree.big .trunk{width:44px;height:58px}
-.tree.tap .trunk{width:58px;height:74px; bottom:0}
-
-/* Stern */
-.tree .star{
-  position:absolute;
-  left:50%;
-  top:-2px;
-  transform:translateX(-50%) rotate(10deg);
-  width:34px; height:34px;
-  background: radial-gradient(circle at 30% 30%, #fff6b8, #ffd34a 55%, #ffb300);
-  clip-path: polygon(50% 0%, 62% 34%, 98% 36%, 70% 58%, 80% 92%, 50% 72%, 20% 92%, 30% 58%, 2% 36%, 38% 34%);
-  box-shadow: 0 0 20px rgba(255,215,80,.6);
-}
-.tree.big .star{width:40px;height:40px}
-.tree.tap .star{width:52px;height:52px; top:2px}
-
-/* Kugeln (Deko) */
-.orn{
-  position:absolute;
-  width:16px; height:16px;
-  border-radius:50%;
-  background: radial-gradient(circle at 30% 30%, #fff, rgba(255,0,0,.9) 55%, rgba(120,0,0,.95));
-  box-shadow: 0 10px 18px rgba(0,0,0,.25);
-}
-.tree .o1{left:55px; top:56px}
-.tree .o2{left:98px; top:76px; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,220,0,.95) 55%, rgba(160,120,0,.95))}
-.tree .o3{left:72px; top:102px; background: radial-gradient(circle at 30% 30%, #fff, rgba(0,180,255,.9) 55%, rgba(0,80,140,.95))}
-.tree .o4{left:115px; top:112px}
-.tree .o5{left:84px; top:132px; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,0,200,.9) 55%, rgba(120,0,100,.95))}
-
-.tree.big .o1{left:66px; top:68px}
-.tree.big .o2{left:120px; top:90px}
-.tree.big .o3{left:86px; top:120px}
-.tree.big .o4{left:140px; top:132px}
-.tree.big .o5{left:102px; top:156px}
-
-/* Tap-Kugeln als Buttons */
-.ornBtn{
-  position:absolute;
-  width:30px;height:30px;
-  border:0;
-  border-radius:50%;
+  left: 6%;
+  top: 38%;
+  width: min(740px, 92%);
+  height: 240px;
   cursor:pointer;
-  background: radial-gradient(circle at 30% 30%, #fff, rgba(255,60,60,.95) 55%, rgba(120,0,0,.95));
-  box-shadow: 0 16px 22px rgba(0,0,0,.30);
-  transform: scale(1);
+  user-select:none;
+  outline:none;
+  animation: sledWobble 0.9s ease-in-out infinite;
+  transform-origin: 20% 80%;
 }
-.ornBtn:active{transform: scale(.94)}
-.ornBtn.found{opacity:.15; filter:saturate(.2); cursor:default; box-shadow:none}
-.tree.tap .ornBtn.o1{left:38%; top:32%}
-.tree.tap .ornBtn.o2{left:56%; top:40%; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,220,0,.95) 55%, rgba(160,120,0,.95))}
-.tree.tap .ornBtn.o3{left:45%; top:54%; background: radial-gradient(circle at 30% 30%, #fff, rgba(0,180,255,.92) 55%, rgba(0,80,140,.95))}
-.tree.tap .ornBtn.o4{left:60%; top:60%}
-.tree.tap .ornBtn.o5{left:48%; top:72%; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,0,200,.9) 55%, rgba(120,0,100,.95))}
+.sled:focus{box-shadow: 0 0 0 3px rgba(255,211,106,.35); border-radius:18px}
+@keyframes sledWobble{
+  0%{transform: translateX(0) rotate(-1deg)}
+  50%{transform: translateX(8px) rotate(1deg)}
+  100%{transform: translateX(0) rotate(-1deg)}
+}
 
-/* Santa */
+.cows{
+  position:absolute; left:0; top: 80px;
+  display:flex; gap: 18px;
+}
+.cow{position:relative; width: 120px; height: 90px; filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));}
+.cow-face{
+  position:absolute; left:0; top: 24px;
+  width: 42px; height: 42px; border-radius: 14px;
+  background: #fff;
+  border:1px solid rgba(0,0,0,.12);
+}
+.cow-face:before, .cow-face:after{
+  content:""; position:absolute; top: -8px; width: 14px; height: 14px; border-radius: 6px;
+  background:#fff; border:1px solid rgba(0,0,0,.12);
+}
+.cow-face:before{left:2px; transform: rotate(-10deg)}
+.cow-face:after{right:2px; transform: rotate(10deg)}
+.cow-face i{display:none}
+.cow-body{
+  position:absolute; left: 24px; top: 18px;
+  width: 86px; height: 56px;
+  border-radius: 18px;
+  background: #fff;
+  border:1px solid rgba(0,0,0,.12);
+  overflow:hidden;
+}
+.cow-body:before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(20px 16px at 20% 35%, rgba(0,0,0,.55) 55%, transparent 57%),
+    radial-gradient(24px 18px at 55% 55%, rgba(0,0,0,.55) 55%, transparent 57%),
+    radial-gradient(18px 14px at 80% 35%, rgba(0,0,0,.55) 55%, transparent 57%);
+  opacity:.75;
+}
+.cow:before, .cow:after{
+  content:"";
+  position:absolute; bottom:0; width: 10px; height: 26px;
+  background:#1b1b1b;
+  border-radius: 6px;
+  left: 38px;
+  box-shadow: 24px 0 0 #1b1b1b, 56px 0 0 #1b1b1b;
+}
+.cow:after{
+  width: 8px; height: 30px;
+  left: 98px; bottom: 22px;
+  border-radius: 6px;
+  transform: rotate(20deg);
+  box-shadow:none;
+}
+
+.ropes{
+  position:absolute; left: 110px; top: 124px;
+  width: 260px; height: 2px;
+  background: rgba(255,211,106,.65);
+  box-shadow: 0 8px 0 rgba(255,211,106,.45);
+  transform: rotate(-4deg);
+}
+
+.sled-base{
+  position:absolute; left: 360px; top: 110px;
+  width: 320px; height: 110px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #b12b2b, #7c1616);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+}
+.sled-base:before{
+  content:"";
+  position:absolute; left:18px; bottom:-16px;
+  width: 290px; height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e6c15a, #caa545);
+  transform: skewX(-18deg);
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+}
+.sled-base:after{
+  content:"";
+  position:absolute; left: -18px; bottom:-10px;
+  width: 56px; height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e6c15a, #caa545);
+  transform: rotate(14deg);
+}
+
+/* Santa (besser als “runde Körper”: hat Mütze, Kopf, Bart, Gürtel, Stiefel) */
 .santa{
-  position:absolute;
-  right:20px;
-  bottom:34px;
-  width:120px;
-  height:170px;
-  filter: drop-shadow(0 16px 18px rgba(0,0,0,.35));
-  animation: bounce 1.8s ease-in-out infinite;
+  position:absolute; left: 460px; top: 28px;
+  width: 190px; height: 190px;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.35));
 }
-.santa.big{right:18px; bottom:22px; width:140px; height:200px}
 .santa .hat{
-  position:absolute; left:34px; top:0;
-  width:0;height:0;
-  border-left:28px solid transparent;
-  border-right:28px solid transparent;
-  border-bottom:48px solid rgba(220,40,40,.95);
-  transform: rotate(-12deg);
+  position:absolute; left: 44px; top: 0;
+  width: 70px; height: 44px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 16px 16px 10px 10px;
+  transform: rotate(-10deg);
 }
-.santa .face{
-  position:absolute; left:42px; top:38px;
-  width:46px; height:46px;
-  border-radius:50%;
-  background: rgba(255,220,190,.95);
+.santa .hat:before{
+  content:"";
+  position:absolute; left: 0; bottom:-10px;
+  width: 74px; height: 14px; border-radius:999px;
+  background: #f3f3f3;
+}
+.santa .hat:after{
+  content:"";
+  position:absolute; right:-12px; top: 8px;
+  width: 18px; height: 18px; border-radius:999px;
+  background:#f3f3f3;
+}
+.santa .head{
+  position:absolute; left: 58px; top: 34px;
+  width: 54px; height: 54px; border-radius: 20px;
+  background: #f2c7a4;
 }
 .santa .beard{
-  position:absolute; left:36px; top:56px;
-  width:58px; height:60px;
-  border-radius: 18px 18px 30px 30px;
-  background: rgba(255,255,255,.95);
-  box-shadow: inset 0 -10px 0 rgba(0,0,0,.06);
+  position:absolute; left: 44px; top: 64px;
+  width: 82px; height: 64px;
+  background:#f3f3f3;
+  border-radius: 26px;
+  clip-path: polygon(0 0,100% 0,92% 70%,70% 100%,30% 100%,8% 70%);
 }
 .santa .body{
-  position:absolute; left:26px; top:92px;
-  width:78px; height:74px;
-  border-radius: 18px;
-  background: rgba(220,40,40,.95);
-  box-shadow: inset 0 -10px 0 rgba(0,0,0,.10);
+  position:absolute; left: 44px; top: 100px;
+  width: 92px; height: 74px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 26px;
 }
-
-/* Geschenk */
-.gift{
-  position:absolute;
-  left:200px;
-  bottom:30px;
-  width:76px;
-  height:56px;
-  border-radius:14px;
-  background: rgba(30,140,230,.95);
-  box-shadow: inset 0 -10px 0 rgba(0,0,0,.14), 0 18px 24px rgba(0,0,0,.25);
-  animation: wiggle 2.0s ease-in-out infinite;
+.santa .belt{
+  position:absolute; left: 44px; top: 138px;
+  width: 92px; height: 14px;
+  background:#1d1d1d;
+  border-radius: 999px;
 }
-.gift.big{left:240px; bottom:24px; width:92px; height:66px}
-.gift .ribbon{
-  position:absolute; left:50%; top:0;
-  transform:translateX(-50%);
-  width:14px; height:100%;
-  background: rgba(255,210,70,.95);
-}
-.gift .ribbon::after{
+.santa .belt:after{
   content:"";
-  position:absolute; left:50%; top:16px;
-  transform:translateX(-50%);
-  width:100%; height:14px;
-  background: rgba(255,210,70,.95);
-  border-radius:10px;
+  position:absolute; left: 38px; top: 2px;
+  width: 18px; height: 10px;
+  border-radius: 3px;
+  border:2px solid #e6c15a;
+}
+.santa .arm{
+  position:absolute; top: 110px;
+  width: 44px; height: 18px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 999px;
+}
+.santa .arm.left{left: 12px; transform: rotate(14deg)}
+.santa .arm.right{right: 10px; transform: rotate(-18deg)}
+.santa .arm:after{
+  content:"";
+  position:absolute; right:-6px; top: 2px;
+  width: 16px; height: 14px; border-radius: 10px;
+  background:#f2c7a4;
+}
+.santa .boot{
+  position:absolute; bottom: 6px;
+  width: 34px; height: 16px;
+  background:#1d1d1d;
+  border-radius: 999px;
+}
+.santa .boot.left{left: 54px}
+.santa .boot.right{left: 92px}
+.santa .sack{
+  position:absolute; right: -10px; top: 92px;
+  width: 70px; height: 70px;
+  background: linear-gradient(180deg, #caa26a, #9c7a4a);
+  border-radius: 26px 26px 24px 24px;
+  transform: rotate(10deg);
+  box-shadow: inset 0 -12px 0 rgba(0,0,0,.12);
+}
+.santa .sack:before{
+  content:"";
+  position:absolute; left: 10px; top: 10px;
+  width: 50px; height: 12px; border-radius: 999px;
+  background: rgba(0,0,0,.12);
 }
 
-/* Wipe */
-.wipeWrap{
+/* Szene 2 (Wischen) */
+.snow-area{
+  margin-top:14px;
   position:relative;
-  height:min(420px, 60vh);
-  border-radius:18px;
-  overflow:hidden;
+  height: calc(100% - 180px);
+  min-height: 380px;
+  border-radius: 18px;
   border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.04);
+  overflow:hidden;
+  background:
+    radial-gradient(700px 320px at 40% 40%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.08));
 }
-.underScene{
-  position:absolute; inset:0;
-}
-#wipeCanvas{
+.wipe-canvas{
   position:absolute; inset:0;
   width:100%; height:100%;
-  touch-action:none;
+  touch-action: none;
 }
-.progress{
-  position:absolute;
-  left:12px; right:12px; bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-radius:14px;
-  background: rgba(0,0,0,.25);
+.wipe-progress{
+  position:absolute; left:12px; bottom:12px;
+  background: rgba(0,0,0,.35);
   border:1px solid rgba(255,255,255,.12);
-}
-.bar{flex:1; height:10px; border-radius:999px; background: rgba(255,255,255,.12); overflow:hidden}
-.barFill{height:100%; width:0%; background: rgba(255,255,255,.85)}
-.pct{min-width:48px; font-weight:800}
-
-/* Tap Scene */
-.tapScene{
-  margin-top:10px;
-  border-radius:18px;
-  padding:12px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.04);
-}
-.score{
-  margin-top:10px;
-  text-align:center;
+  padding:8px 10px;
+  border-radius: 999px;
   font-weight:800;
 }
-
-/* Code Reveal */
-.codeBox{
+.ghost-btn{
   margin-top:10px;
-  border-radius:18px;
-  padding:14px;
-  background: rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
+  background: transparent;
+  border:1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.85);
+  border-radius: 999px;
+  padding:10px 12px;
 }
-.codeLabel{opacity:.9; font-weight:700; margin-bottom:6px}
-.code{
-  font-size:1.5rem;
-  font-weight:900;
-  letter-spacing:.18em;
-  padding:12px 10px;
-  border-radius:14px;
-  background: rgba(0,0,0,.25);
+.ghost-btn:active{transform: translateY(1px)}
+.fallen-santa{
+  position:absolute; left: 18%; top: 40%;
+  width: 220px; height: 160px;
+  transform: rotate(-10deg);
+  opacity:.95;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.35));
+}
+.fallen-santa .hat, .fallen-santa .head, .fallen-santa .beard,
+.fallen-santa .body, .fallen-santa .belt, .fallen-santa .sack{
+  position:absolute;
+}
+.fallen-santa .hat{
+  left: 18px; top: 14px; width: 66px; height: 40px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 16px;
+}
+.fallen-santa .hat:before{
+  content:""; position:absolute; left: 0; bottom:-10px;
+  width: 70px; height: 14px; border-radius:999px; background:#f3f3f3;
+}
+.fallen-santa .head{
+  left: 34px; top: 44px; width: 54px; height: 54px;
+  border-radius: 20px; background:#f2c7a4;
+}
+.fallen-santa .beard{
+  left: 18px; top: 74px; width: 88px; height: 64px;
+  background:#f3f3f3; border-radius: 26px;
+  clip-path: polygon(0 0,100% 0,92% 70%,70% 100%,30% 100%,8% 70%);
+}
+.fallen-santa .body{
+  left: 100px; top: 64px; width: 100px; height: 78px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 26px;
+}
+.fallen-santa .belt{
+  left: 100px; top: 102px; width: 100px; height: 14px;
+  background:#1d1d1d; border-radius:999px;
+}
+.fallen-santa .sack{
+  left: 150px; top: 8px; width: 72px; height: 72px;
+  background: linear-gradient(180deg, #caa26a, #9c7a4a);
+  border-radius: 26px;
+  box-shadow: inset 0 -12px 0 rgba(0,0,0,.12);
+}
+
+/* Szene 3 */
+.final-world{
+  margin-top:14px;
+  height: calc(100% - 180px);
+  min-height: 420px;
+  position:relative;
+  border-radius: 18px;
   border:1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+  background:
+    radial-gradient(900px 380px at 20% 20%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.10));
 }
-.copied{display:none; margin-top:8px; font-weight:800}
-.copied.show{display:block}
 
-/* Schnee Hintergrund */
-.snow{
-  position:fixed; inset:0;
+.tree-wrap{position:absolute; left: 6%; bottom: 10%; width: 280px; height: 340px;}
+.tree{position:relative; width:100%; height:100%; filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));}
+.tree-star{
+  position:absolute; left: 50%; top: 6px;
+  width: 34px; height: 34px;
+  transform: translateX(-50%) rotate(18deg);
+  background: radial-gradient(circle at 30% 30%, #fff3b0, #ffd36a);
+  clip-path: polygon(50% 0%, 62% 32%, 98% 35%, 70% 58%, 78% 92%, 50% 74%, 22% 92%, 30% 58%, 2% 35%, 38% 32%);
+  box-shadow: 0 10px 26px rgba(255,211,106,.25);
+}
+.tree-top,.tree-mid,.tree-bot{
+  position:absolute; left:50%; transform: translateX(-50%);
+  background: linear-gradient(180deg, #2bc56d, #158a48);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+}
+.tree-top{top:34px; width: 120px; height: 90px; clip-path: polygon(50% 0, 0 100%, 100% 100%);}
+.tree-mid{top:92px; width: 180px; height: 120px; clip-path: polygon(50% 0, 0 100%, 100% 100%);}
+.tree-bot{top:176px; width: 240px; height: 150px; clip-path: polygon(50% 0, 0 100%, 100% 100%);}
+.tree-trunk{
+  position:absolute; left:50%; bottom: 10px;
+  width: 60px; height: 70px; transform: translateX(-50%);
+  background: linear-gradient(180deg, #8a5a2b, #5d3b1b);
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.lights{
+  position:absolute; left:50%; top: 70px; transform: translateX(-50%);
+  width: 240px; height: 200px;
+}
+.lights span{
+  position:absolute; width: 12px; height: 12px; border-radius: 999px;
+  background: rgba(255,211,106,.95);
+  box-shadow: 0 0 18px rgba(255,211,106,.35);
+  animation: blink 1.2s ease-in-out infinite;
+}
+.lights span:nth-child(1){left:30px; top:40px; animation-delay:0s}
+.lights span:nth-child(2){left:90px; top:20px; animation-delay:.2s}
+.lights span:nth-child(3){left:160px; top:46px; animation-delay:.4s}
+.lights span:nth-child(4){left:60px; top:86px; animation-delay:.15s}
+.lights span:nth-child(5){left:130px; top:80px; animation-delay:.35s}
+.lights span:nth-child(6){left:200px; top:96px; animation-delay:.55s}
+.lights span:nth-child(7){left:44px; top:136px; animation-delay:.25s}
+.lights span:nth-child(8){left:110px; top:130px; animation-delay:.45s}
+.lights span:nth-child(9){left:180px; top:140px; animation-delay:.65s}
+.lights span:nth-child(10){left:80px; top:176px; animation-delay:.3s}
+@keyframes blink{
+  0%,100%{transform: scale(.85); opacity:.65}
+  50%{transform: scale(1.15); opacity:1}
+}
+
+/* Santa standing */
+.santa-stand{
+  position:absolute; right: 8%; bottom: 14%;
+  width: 220px; height: 260px;
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+}
+.santa-stand .hat{
+  position:absolute; left: 70px; top: 10px;
+  width: 82px; height: 52px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 18px;
+  transform: rotate(-10deg);
+}
+.santa-stand .hat:before{
+  content:""; position:absolute; left: 0; bottom:-10px;
+  width: 86px; height: 16px; border-radius:999px; background:#f3f3f3;
+}
+.santa-stand .hat:after{
+  content:""; position:absolute; right:-14px; top: 10px;
+  width: 20px; height: 20px; border-radius:999px; background:#f3f3f3;
+}
+.santa-stand .head{
+  position:absolute; left: 86px; top: 54px;
+  width: 64px; height: 64px; border-radius: 24px;
+  background:#f2c7a4;
+}
+.santa-stand .beard{
+  position:absolute; left: 66px; top: 92px;
+  width: 104px; height: 84px;
+  background:#f3f3f3;
+  border-radius: 34px;
+  clip-path: polygon(0 0,100% 0,92% 72%,72% 100%,28% 100%,8% 72%);
+}
+.santa-stand .body{
+  position:absolute; left: 60px; top: 160px;
+  width: 120px; height: 86px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 30px;
+}
+.santa-stand .belt{
+  position:absolute; left: 60px; top: 202px;
+  width: 120px; height: 16px;
+  background:#1d1d1d;
+  border-radius:999px;
+}
+.santa-stand .belt:after{
+  content:""; position:absolute; left: 52px; top: 3px;
+  width: 22px; height: 10px;
+  border-radius: 3px;
+  border:2px solid #e6c15a;
+}
+.santa-stand .arm{
+  position:absolute; top: 172px;
+  width: 64px; height: 20px;
+  background: linear-gradient(180deg, #d63a3a, #a91f1f);
+  border-radius: 999px;
+}
+.santa-stand .arm.left{left: 18px; transform: rotate(14deg)}
+.santa-stand .arm.right{right: 12px; transform: rotate(-18deg)}
+.santa-stand .arm:after{
+  content:""; position:absolute; right:-8px; top: 3px;
+  width: 20px; height: 16px; border-radius: 12px;
+  background:#f2c7a4;
+}
+.santa-stand .boot{
+  position:absolute; bottom: 10px;
+  width: 46px; height: 18px;
+  background:#1d1d1d;
+  border-radius:999px;
+}
+.santa-stand .boot.left{left: 78px}
+.santa-stand .boot.right{left: 126px}
+.santa-stand .sack{
+  position:absolute; right: 0; top: 150px;
+  width: 86px; height: 86px;
+  background: linear-gradient(180deg, #caa26a, #9c7a4a);
+  border-radius: 30px;
+  box-shadow: inset 0 -14px 0 rgba(0,0,0,.12);
+}
+
+/* Gift */
+.gift{
+  position:absolute; left: 44%; bottom: 14%;
+  width: 160px; height: 160px;
+  transform: translateX(-50%);
+  cursor:pointer;
+  user-select:none;
+  outline:none;
+}
+.gift:focus{box-shadow: 0 0 0 3px rgba(255,211,106,.35); border-radius: 18px}
+.gift-box{
+  position:absolute; left: 18px; top: 30px;
+  width: 124px; height: 106px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #3e8bff, #1b4fb8);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+}
+.gift-ribbon{
+  position:absolute; left: 76px; top: 30px;
+  width: 18px; height: 106px;
+  background: linear-gradient(180deg, #ffd36a, #e6b84a);
+  border-radius: 10px;
+}
+.gift-ribbon:before{
+  content:"";
+  position:absolute; left:-58px; top: 42px;
+  width: 124px; height: 18px;
+  background: linear-gradient(180deg, #ffd36a, #e6b84a);
+  border-radius: 10px;
+}
+.gift-bow{
+  position:absolute; left: 66px; top: 12px;
+  width: 48px; height: 32px;
+}
+.gift-bow:before,.gift-bow:after{
+  content:""; position:absolute; top:0;
+  width: 26px; height: 26px;
+  background: linear-gradient(180deg, #ffd36a, #e6b84a);
+  border-radius: 14px 14px 14px 0;
+}
+.gift-bow:before{left:0; transform: rotate(12deg)}
+.gift-bow:after{right:0; transform: rotate(-12deg); border-radius: 14px 14px 0 14px}
+.gift-shadow{
+  position:absolute; left: 20px; bottom: 6px;
+  width: 120px; height: 18px;
+  background: rgba(0,0,0,.25);
+  filter: blur(6px);
+  border-radius: 999px;
+}
+
+.reveal{
+  position:absolute; left: 50%; top: 22px;
+  transform: translateX(-50%);
+  width: min(520px, 92%);
+  padding: 14px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.07));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow: 0 14px 40px rgba(0,0,0,.25);
+  opacity: 0;
   pointer-events:none;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 2px),
-    radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 2px),
-    radial-gradient(circle, rgba(255,255,255,.5) 1px, transparent 2px);
-  background-size: 80px 80px, 120px 120px, 160px 160px;
-  background-position: 0 0, 30px 40px, 60px 20px;
-  opacity:.35;
-  animation: snowMove 10s linear infinite;
+  transition: opacity .25s ease;
+}
+.reveal.show{opacity:1; pointer-events:auto}
+.reveal-title{font-weight:900; color: var(--accent); margin-bottom:8px}
+.reveal-code{
+  font-size: clamp(18px, 3.6vw, 26px);
+  font-weight: 950;
+  letter-spacing: 1.5px;
+  background: rgba(0,0,0,.25);
+  padding: 10px 12px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.10);
+  user-select: text;
+}
+.reveal-note{margin-top:8px; color: var(--muted); font-size: 13px}
+
+.primary-btn{
+  position:absolute; left:50%; top: 140px;
+  transform: translateX(-50%);
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 0;
+  font-weight: 900;
+  background: linear-gradient(180deg, #ffd36a, #e6b84a);
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+}
+.primary-btn:disabled{
+  opacity:.5;
+  filter: grayscale(.3);
+}
+.primary-btn:active{transform: translateX(-50%) translateY(1px)}
+
+.tiny{
+  position:absolute; left: 50%; top: 188px;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: 13px;
+  text-align:center;
+  width: min(520px, 92%);
 }
 
-@keyframes snowMove{
-  from{transform:translateY(-40px)}
-  to{transform:translateY(40px)}
-}
-@keyframes wobble{
-  0%,100%{transform:translateX(0) rotate(-1.2deg)}
-  50%{transform:translateX(0) rotate(1.6deg)}
-}
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-7px)}
-}
-@keyframes wiggle{
-  0%,100%{transform:rotate(-1.5deg)}
-  50%{transform:rotate(2.5deg)}
-}
+/* Responsive */
+@media (max-width: 520px){
+  .stage{padding:14px}
+  .world{height: calc(100% - 230px)}
+  .sled{top: 42%; height: 220px}
+  .tree-wrap{left: 2%; width: 240px}
+  .santa-stand{right: 2%; transform: scale(.95); transform-origin: bottom right;}
+  .gift{left: 46%; transform: translateX(-50%) scale(.95)}
+  }
