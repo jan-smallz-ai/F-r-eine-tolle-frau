@@ -2,150 +2,162 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Michelles Weihnachtsgeschenk 🎄</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Michelles Weihnachtsgeschenk</title>
+
+  <!-- Cache-Breaker: falls GitHub Pages zickt, einfach die Zahl erhöhen -->
   <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
-  <!-- Schneeflocken Hintergrund -->
-  <div class="snow" aria-hidden="true"></div>
+  <div id="app" class="app">
 
-  <main class="app">
-    <!-- SCREEN 1: Intro -->
-    <section class="screen active" id="screen-intro">
-      <div class="card">
-        <h1>Ho ho ho! 🎅</h1>
-        <p class="bubble left">Pssst… ich hab da was für dich, Michelle. 😄</p>
-        <p class="bubble right">Aber du musst es dir erst verdienen!</p>
+    <!-- Hintergrund-Schnee -->
+    <div class="snow" aria-hidden="true"></div>
 
-        <div class="scene">
-          <div class="tree" aria-hidden="true">
-            <div class="star"></div>
-            <div class="layer l1"></div>
-            <div class="layer l2"></div>
-            <div class="layer l3"></div>
-            <div class="trunk"></div>
+    <!-- Bühne -->
+    <main class="stage" role="main">
 
-            <!-- Kugeln -->
-            <div class="orn o1"></div>
-            <div class="orn o2"></div>
-            <div class="orn o3"></div>
-            <div class="orn o4"></div>
-            <div class="orn o5"></div>
+      <!-- Szene 1: Schlitten + Kühe -->
+      <section id="scene-sled" class="scene active" aria-label="Schlitten Szene">
+        <div class="headline">🎄 Weihnachtsmission 🎄</div>
+
+        <div class="bubble" id="bubble1">
+          <div class="bubble-title">Weihnachtsmann:</div>
+          Hilfe! Meine Kühe sind außer Kontrolle!<br>
+          <b>Tipp den Schlitten 3×</b>, um ihn zu stoppen!
+        </div>
+
+        <div class="world">
+          <div id="sled" class="sled" role="button" tabindex="0" aria-label="Schlitten antippen">
+            <!-- Kühe -->
+            <div class="cows">
+              <div class="cow">
+                <div class="cow-face"></div><div class="cow-body"></div>
+              </div>
+              <div class="cow">
+                <div class="cow-face"></div><div class="cow-body"></div>
+              </div>
+              <div class="cow">
+                <div class="cow-face"></div><div class="cow-body"></div>
+              </div>
+            </div>
+
+            <!-- Seile -->
+            <div class="ropes"></div>
+
+            <!-- Schlitten + Santa -->
+            <div class="sled-base"></div>
+            <div class="santa">
+              <div class="hat"></div>
+              <div class="head"></div>
+              <div class="beard"></div>
+              <div class="body"></div>
+              <div class="belt"></div>
+              <div class="arm left"></div>
+              <div class="arm right"></div>
+              <div class="boot left"></div>
+              <div class="boot right"></div>
+              <div class="sack"></div>
+            </div>
           </div>
+        </div>
 
-          <div class="santa" aria-hidden="true">
+        <div class="counter" id="tapCounter">Taps: 0 / 3</div>
+        <div class="hint">Tipp: Wenn’s nicht reagiert, tipp direkt auf den Schlitten.</div>
+      </section>
+
+      <!-- Szene 2: Schnee wegwischen -->
+      <section id="scene-snow" class="scene" aria-label="Schnee Szene">
+        <div class="headline">❄️ Oh nein…</div>
+
+        <div class="bubble" id="bubble2">
+          <div class="bubble-title">Weihnachtsmann:</div>
+          Uaaah! Ich bin in den Schnee gefallen…<br>
+          <b>Wisch den Schnee weg</b>, damit ich wieder aufstehen kann!
+        </div>
+
+        <div class="snow-area">
+          <div class="fallen-santa" aria-hidden="true">
             <div class="hat"></div>
-            <div class="face"></div>
+            <div class="head"></div>
             <div class="beard"></div>
             <div class="body"></div>
+            <div class="belt"></div>
+            <div class="sack"></div>
           </div>
 
-          <div class="gift" aria-hidden="true">
-            <div class="ribbon"></div>
-          </div>
+          <!-- Canvas fürs Wegwischen -->
+          <canvas id="wipeCanvas" class="wipe-canvas"></canvas>
+
+          <div class="wipe-progress" id="wipeProgress">Schnee entfernt: 0%</div>
         </div>
 
-        <button class="btn" id="btn-start">Los geht’s ✨</button>
-        <p class="hint">Mini-Spiel: <b>Schnee wegwischen</b> → <b>Kugeln finden</b> → <b>Code enthüllen</b></p>
-      </div>
-    </section>
+        <button id="btnSkipWipe" class="ghost-btn" type="button">
+          (Nur wenn nötig) Schnee überspringen
+        </button>
+      </section>
 
-    <!-- SCREEN 2: Snow wipe -->
-    <section class="screen" id="screen-wipe">
-      <div class="card">
-        <h2>1/3: Wisch den Schnee weg! ❄️</h2>
-        <p class="bubble left">Wisch mit dem Finger über den Schnee, bis genug frei ist.</p>
+      <!-- Szene 3: Geschenk unter dem Baum -->
+      <section id="scene-gift" class="scene" aria-label="Geschenk Szene">
+        <div class="headline">✨ Mission geschafft ✨</div>
 
-        <div class="wipeWrap">
-          <div class="underScene" aria-hidden="true">
-            <div class="tree big">
-              <div class="star"></div>
-              <div class="layer l1"></div>
-              <div class="layer l2"></div>
-              <div class="layer l3"></div>
-              <div class="trunk"></div>
-              <div class="orn o1"></div><div class="orn o2"></div><div class="orn o3"></div><div class="orn o4"></div><div class="orn o5"></div>
+        <div class="bubble" id="bubble3">
+          <div class="bubble-title">Weihnachtsmann:</div>
+          <b>Danke, Michelle!</b> Du hast Weihnachten gerettet! 🎁<br>
+          Hier ist dein Geschenk – <b>schüttel es</b> (oder tipp es an)!
+        </div>
+
+        <div class="final-world">
+          <div class="tree-wrap" aria-hidden="true">
+            <div class="tree">
+              <div class="tree-star"></div>
+              <div class="tree-top"></div>
+              <div class="tree-mid"></div>
+              <div class="tree-bot"></div>
+              <div class="tree-trunk"></div>
+              <div class="lights">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
             </div>
-            <div class="gift big"><div class="ribbon"></div></div>
-            <div class="santa big"><div class="hat"></div><div class="face"></div><div class="beard"></div><div class="body"></div></div>
-            <div class="ground"></div>
           </div>
 
-          <!-- Wischfläche (Canvas) -->
-          <canvas id="wipeCanvas"></canvas>
-
-          <div class="progress">
-            <div class="bar"><div class="barFill" id="wipeBar"></div></div>
-            <div class="pct" id="wipePct">0%</div>
+          <div class="santa-stand" aria-hidden="true">
+            <div class="hat"></div>
+            <div class="head"></div>
+            <div class="beard"></div>
+            <div class="body"></div>
+            <div class="belt"></div>
+            <div class="arm left"></div>
+            <div class="arm right"></div>
+            <div class="boot left"></div>
+            <div class="boot right"></div>
+            <div class="sack"></div>
           </div>
+
+          <div id="gift" class="gift" role="button" tabindex="0" aria-label="Geschenk schütteln oder antippen">
+            <div class="gift-box"></div>
+            <div class="gift-ribbon"></div>
+            <div class="gift-bow"></div>
+            <div class="gift-shadow"></div>
+          </div>
+
+          <div id="reveal" class="reveal" aria-live="polite">
+            <div class="reveal-title">🎮 Steam-Gutschein</div>
+            <div class="reveal-code" id="codeText">XXXX-XXXX-XXXX</div>
+            <div class="reveal-note">
+              (Den echten Code trägst du gleich in <b>main.js</b> ein.)
+            </div>
+          </div>
+
+          <button id="btnCopy" class="primary-btn" type="button" disabled>Code kopieren</button>
+          <div class="tiny" id="motionHint"></div>
         </div>
+      </section>
 
-        <button class="btn" id="btn-to-balls" disabled>Weiter 🎄</button>
-        <p class="hint">Tipp: Große Kreise wischen geht schneller.</p>
-      </div>
-    </section>
-
-    <!-- SCREEN 3: Ornament game -->
-    <section class="screen" id="screen-balls">
-      <div class="card">
-        <h2>2/3: Finde die Kugeln! 🔴🟡</h2>
-        <p class="bubble right">Tippe <b>5 Kugeln</b> am Baum an. Jede Kugel macht „pling“ 😄</p>
-
-        <div class="tapScene">
-          <div class="tree tap" id="tapTree" aria-label="Tannenbaum zum Antippen">
-            <div class="star"></div>
-            <div class="layer l1"></div>
-            <div class="layer l2"></div>
-            <div class="layer l3"></div>
-            <div class="trunk"></div>
-
-            <button class="ornBtn o1" data-orn="1" aria-label="Kugel 1"></button>
-            <button class="ornBtn o2" data-orn="2" aria-label="Kugel 2"></button>
-            <button class="ornBtn o3" data-orn="3" aria-label="Kugel 3"></button>
-            <button class="ornBtn o4" data-orn="4" aria-label="Kugel 4"></button>
-            <button class="ornBtn o5" data-orn="5" aria-label="Kugel 5"></button>
-          </div>
-
-          <div class="score">
-            Gefunden: <span id="foundCount">0</span>/5
-          </div>
-        </div>
-
-        <button class="btn" id="btn-reveal" disabled>Code enthüllen 🎁</button>
-      </div>
-    </section>
-
-    <!-- SCREEN 4: Reveal -->
-    <section class="screen" id="screen-reveal">
-      <div class="card">
-        <h2>3/3: Dein Geschenk 🎁</h2>
-        <p class="bubble left">Okay okay… du hast gewonnen. 😅</p>
-        <p class="bubble right">Hier ist dein Gutscheincode:</p>
-
-        <div class="codeBox" id="codeBox">
-          <div class="codeLabel">Gutscheincode</div>
-          <div class="code" id="giftCode">•••• •••• ••••</div>
-          <button class="btn small" id="btn-copy">Kopieren 📋</button>
-          <div class="copied" id="copiedMsg">Kopiert! ✅</div>
-        </div>
-
-        <div class="finalScene">
-          <div class="tree big">
-            <div class="star"></div>
-            <div class="layer l1"></div><div class="layer l2"></div><div class="layer l3"></div>
-            <div class="trunk"></div>
-            <div class="orn o1"></div><div class="orn o2"></div><div class="orn o3"></div><div class="orn o4"></div><div class="orn o5"></div>
-          </div>
-          <div class="gift big"><div class="ribbon"></div></div>
-          <div class="santa big"><div class="hat"></div><div class="face"></div><div class="beard"></div><div class="body"></div></div>
-        </div>
-
-        <p class="hint">Frohe Weihnachten ❤️</p>
-      </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script src="main.js?v=4"></script>
 </body>
-</html>
+          </html>
